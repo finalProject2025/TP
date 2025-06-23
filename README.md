@@ -11,8 +11,12 @@ Dieses Repository enthält den Code für eine Nachbarschaftshilfe-Plattform, die
 
 ## Technische Dokumentation
 
-Die detaillierte technische Planung und Architektur des Projekts finden Sie in der [technical_plan.md](technical_plan.md). Dieses Dokument enthält:
+Die wichtigsten Projektdokumente finden Sie im `docs`-Ordner:
 
+- [Technischer Plan](docs/technical_plan.md) - Enthält die detaillierte technische Planung und Architektur
+- [Definition of Done](docs/DoD.md) - Checkliste mit Qualitätskriterien für Projektabschluss
+
+Der technische Plan umfasst dabei:
 - Detaillierte Architektur & Komponenten
 - Datenbank-Schema-Design
 - Technologie-Stack (Frontend/Backend)
