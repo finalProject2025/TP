@@ -15,6 +15,7 @@ Die wichtigsten Projektdokumente finden Sie im `docs`-Ordner:
 
 - [Technischer Plan](docs/technical_plan.md) - Enthält die detaillierte technische Planung und Architektur
 - [Definition of Done](docs/DoD.md) - Checkliste mit Qualitätskriterien für Projektabschluss
+- [Product Backlog](docs/product-backlog.md) - Enthält das initiale Product Backlog. Das Backlog ist lebendig – es wird regelmäßig ergänzt und angepasst.
 
 Der technische Plan umfasst dabei:
 - Detaillierte Architektur & Komponenten
