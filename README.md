@@ -83,3 +83,5 @@ https://helpinghands2025.atlassian.net/jira/software/projects/SCRUM/boards/1/bac
 
 ### Screenshot
 
+![Jira Board](./screenshots/Jira_FinalProject2025.png)
+
