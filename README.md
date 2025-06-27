@@ -85,3 +85,10 @@ https://helpinghands2025.atlassian.net/jira/software/projects/SCRUM/boards/1/bac
 
 ![Jira Board](./screenshots/Jira_FinalProject2025.png)
 
+## Präsentation
+
+In diesem Ordner (`/presentation`) liegen unsere ersten Entwürfe für die Projektpräsentation.  
+Diese Folien, Bilder und Assets sind noch **Work-in-Progress** und werden im Laufe des Projekts weiter ergänzt und verfeinert.  
+
+- Präsentation als PDF oder Google Slides:  https://docs.google.com/presentation/d/1N0Ke-U2M6ElpYKichGh7XkR_fXpQiFjjPzqo6TgIWvE/edit?slide=id.g36b2af83342_0_25#slide=id.g36b2af83342_0_25
+- Assets (Logos, Kamerahintergrund etc.): im gleichen Ordner verfügbar
