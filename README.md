@@ -92,3 +92,23 @@ Diese Folien, Bilder und Assets sind noch **Work-in-Progress** und werden im Lau
 
 - Präsentation als PDF oder Google Slides:  https://docs.google.com/presentation/d/1N0Ke-U2M6ElpYKichGh7XkR_fXpQiFjjPzqo6TgIWvE/edit?slide=id.g36b2af83342_0_25#slide=id.g36b2af83342_0_25
 - Assets (Logos, Kamerahintergrund etc.): im gleichen Ordner verfügbar
+
+## Projekt-Cockpit
+
+### GitHub Repository  
+https://github.com/finalProject2025/TP
+
+### Projektmanagement-Board  
+https://helpinghands2025.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog?selectedIssue=SCRUM-5
+
+### Team-Meeting-Raum  
+https://meet.google.com/drz-wmvx-pyx
+
+### Daily Scrum  
+Mo–Fr um 09:15 Uhr
+
+#### Der Sinn unseres Daily Scrums  
+Das Daily Scrum ist ein 15-minütiges Event für die Entwickler des Scrum Teams. 
+Der Zweck des Daily Scrums ist es, den Fortschritt in Richtung des Sprint-Ziels zu überprüfen und den Sprint-Backlog bei Bedarf anzupassen, 
+um den Arbeitsplan für den nächsten Arbeitstag abzustimmen. Es ist keine Status-Runde für den Product Owner oder Scrum Master, 
+sondern ein kurzes Planungsmeeting für das Team selbst, um die Zusammenarbeit und Leistung zu optimieren und eventuelle Hindernisse (Impediments) frühzeitig zu identifizieren.
