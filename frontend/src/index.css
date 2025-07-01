@@ -1,3 +1,18 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+
 .header {
   position: fixed;
   top: 0;
@@ -21,21 +36,67 @@
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: rgb(7 84 126);
+    max-height: 52px;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+
+}
 .nav-links a {
-  margin-left: 1rem;
-  text-decoration: none;
-  color: #333;
+    margin-left: 1rem;
+    text-decoration: none;
+    color: #333;
+    font-family: arial;
+    font-size: 1.4rem;
 }
 
 .nav-links a:hover {
   color: #007bff;
 }
-
 .main {
-  margin-top: 80px; /* Platz für den fixed header */
-  padding: 2rem;
+    width: 100vw; /* ganze Viewport-Breite */
+    background: rgb(255, 238, 205);
+    display: flex;
+    flex-wrap: wrap; /* oder nowrap, je nach Bedarf */
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+  height: 60vh; /* Höhe des Sliders */
+  overflow: hidden; /* Überlauf verstecken */
+  display: flex;
+  justify-content: center; /* horizontal zentriert */
+  align-items: center;     /* vertikal zentriert */
+}
+.slider-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center; /* horizontal zentriert */
+  align-items: center;     /* vertikal zentriert */
+
+  color: white;            /* falls der Text vor dunklem Bild besser lesbar sein soll */
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3); /* optional: halbtransparenter Overlay */
+}
+
+.slider-text h1{
+    font-size: 5rem;
+    margin: 0;
+
+}
+.slider img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
