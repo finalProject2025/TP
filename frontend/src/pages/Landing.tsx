@@ -19,8 +19,14 @@ const Landing: React.FC = () => {
             src="https://static.vecteezy.com/ti/gratis-vektor/p1/701690-abstrakter-polygonaler-banner-hintergrund-kostenlos-vektor.jpg"
             alt="das Banner Bild"
           />
-          <div className="slider-text">
+          <div className="slider-textl">
             <div className="slider-text-left">
+              <h1>Willkommen auf Neighborly</h1>
+              <h2>Ihre Nachbarschaft neu entdecken</h2>
+            </div>
+          </div>
+                    <div className="slider-textr">
+            <div className="slider-text-right">
               <h1>Willkommen auf Neighborly</h1>
               <h2>Ihre Nachbarschaft neu entdecken</h2>
             </div>

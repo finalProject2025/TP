@@ -74,11 +74,11 @@ body, html {
   justify-content: center; /* horizontal zentriert */
   align-items: center;     /* vertikal zentriert */
 }
-.slider-text {
+.slider-textl {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 50%;
   height: 100%;
 
   display: flex;
@@ -88,6 +88,21 @@ body, html {
   color: white;            /* falls der Text vor dunklem Bild besser lesbar sein soll */
   text-align: center;
   background: rgba(0, 0, 0, 0.3); /* optional: halbtransparenter Overlay */
+}
+
+.slider-textr {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center; /* horizontal zentriert */
+  align-items: center;     /* vertikal zentriert */
+
+  color: white;            /* falls der Text vor dunklem Bild besser lesbar sein soll */
+  text-align: center;
 }
 
 .slider-text h1{
