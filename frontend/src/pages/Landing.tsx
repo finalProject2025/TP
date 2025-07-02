@@ -5,7 +5,7 @@ const Landing: React.FC = () => {
   return (
     <div>
       <header className="header">
-        <nav className="nav">
+        <nav className="bg-white shadow-sm border-b border-gray-100 backdrop-blur-sm bg-opacity-95">
           <div className="logo">Neighborly</div>
           <div className="nav-links">
             <a href="/login">Login</a>

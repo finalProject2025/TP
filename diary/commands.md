@@ -95,3 +95,38 @@ git checkout <COMMIT_HASH> -- README.md
 
 **Tipp:**  
 Regelmäßige Commits schützen dich vor Datenverlust und machen es einfacher, versehentliche Änderungen rückgängig zu machen.
+
+
+## Tailwind installieren
+https://tailwindcss.com/docs/installation/using-vite
+
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+Configure the Vite plugin
+Add the @tailwindcss/vite plugin to your Vite configuration.
+---
+
+```ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+})
+```
+Import Tailwind CSS
+Add an @import to your CSS file that imports Tailwind CSS.
+---
+```css
+@import "tailwindcss";
+```
+---
+```bash
+npm run dev
+```
