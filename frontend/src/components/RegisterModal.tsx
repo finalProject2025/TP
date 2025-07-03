@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from './Modal.tsx';
 import { simpleApi } from '../services/simpleApi';
-import { useToast } from '../hooks/useToast';
+import { useToast } from '../hooks/useToast.tsx';
 
 interface RegisterModalProps {
   isOpen: boolean;
