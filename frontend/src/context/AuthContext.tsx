@@ -1,7 +1,26 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { User, AuthContextType, RegisterData } from '../types/index';
-import { authAPI } from '../services/api';
+// Define types locally to avoid import issues
+import type { User } from '../types';
+
+interface RegisterData {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  postal_code: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  token: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  register: (userData: RegisterData) => Promise<void>;
+  logout: () => void;
+  updateUser: (userData: Partial<User>) => void;
+  isLoading: boolean;
+}
+import { simpleApi } from '../services/simpleApi';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -33,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser(JSON.parse(storedUser));
           
           // Verify token is still valid
-          await authAPI.verify();
+          await simpleApi.getProfile();
         } catch (error) {
           console.error('Token verification failed:', error);
           localStorage.removeItem('token');
@@ -51,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await authAPI.login({ email, password });
+      const response = await simpleApi.login(email, password);
       const { user: userData, token: userToken } = response;
 
       setUser(userData);
@@ -66,7 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const register = async (userData: RegisterData) => {
     try {
-      const response = await authAPI.register(userData);
+      const response = await simpleApi.register(userData);
       const { user: newUser, token: userToken } = response;
 
       setUser(newUser);
