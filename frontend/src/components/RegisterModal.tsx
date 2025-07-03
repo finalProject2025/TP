@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from './Modal';
+import Modal from './Modal.tsx';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
 
