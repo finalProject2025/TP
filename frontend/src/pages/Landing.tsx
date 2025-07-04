@@ -79,9 +79,9 @@ function Landing() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen max-w-[1640px] mx-auto  shadow-2xl">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b border-gray-100 backdrop-blur-sm bg-opacity-95">
+      <nav className="bg-white shadow-sm border-b border-gray-100 backdrop-blur-sm bg-opacity-95 px-10">
         <div className="container-custom py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -387,7 +387,7 @@ function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden px-10">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -561,7 +561,7 @@ function Landing() {
       </div>
 
       {/* Features Section */}
-      <div className="bg-gradient-to-br from-white to-gray-50 py-20">
+      <div className="bg-gradient-to-br from-white to-gray-50 py-20 px-10">
         <div className="container-custom">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -654,8 +654,8 @@ function Landing() {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden">
+      {/* Footer Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden px-10">
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full transform translate-x-32 -translate-y-32"></div>
