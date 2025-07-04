@@ -1,27 +1,29 @@
-const express = require("express");
-const cors = require("cors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { Pool } = require("pg");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import pkg from "pg"; // weil pg kein ESM-Export hat
+const { Pool } = pkg;
+import dotenv from "dotenv";
+dotenv.config();
 
 // Initialize Express app
 const app = express();
 
 // Environment variables with defaults
-const NODE_ENV = process.env.NODE_ENV || "development";
-const PORT = process.env.PORT || 3002;
+const NODE_ENV = process.env.NODE_ENV;
+const PORT = process.env.PORT;
 const JWT_SECRET =
-  process.env.JWT_SECRET || "your-secret-key-change-in-production";
-const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS) || 10;
+  process.env.JWT_SECRET;
+const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS);
 
 // Database configuration
 const pool = new Pool({
-  user: process.env.DB_USER || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "neighborhelp",
-  password: process.env.DB_PASSWORD || "password",
-  port: parseInt(process.env.DB_PORT) || 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT),
 });
 
 // Test database connection
@@ -1258,7 +1260,7 @@ async function startServer() {
     console.log(`📊 Environment: ${NODE_ENV}`);
     if (NODE_ENV === "production") {
       console.log(
-        `🌐 CORS enabled for: localhost:3000, 127.0.0.1:3000, 192.168.178.167:3000`
+        `CORS enabled for: ${process.env.CORS_ORIGINS}`
       );
     }
     console.log(`🗄️ Database: ${global.dbConnected ? "PostgreSQL connected" : "Not connected"}`);
@@ -1269,4 +1271,5 @@ async function startServer() {
 
 startServer().catch(console.error);
 
-module.exports = app;
+export default app;
+
