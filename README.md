@@ -85,6 +85,59 @@ https://helpinghands2025.atlassian.net/jira/software/projects/SCRUM/boards/1/bac
 
 ![Jira Board](./screenshots/Jira_FinalProject2025.png)
 
+## Sprint 2
+
+### Sprint Goal
+
+Die Datenbank installieren und Strukturen aufbauen, sowie die Kommunikation zum Backend herstellen.
+Zusätzlich soll nach jedem Sprint ein Backup durchgeführt werden. Geplant ist außerdem ein erstes Test-Deployment, zum Beispiel auf Multipass,
+um eventuelle Probleme frühzeitig zu erkennen. Darüber hinaus möchten wir Unit-Tests integrieren.
+
+### Inhalte des Sprints
+
+Für Sprint 2 wurden folgende User Stories aus dem priorisierten Product Backlog ausgewählt:
+
+- SCRUM-16: Als Nutzer möchte ich auf jeder Seite nachdem erfolgreichen Login sehen, dass ich eine Nachricht erhalten habe.
+- SCRUM-17: Zum persistieren der Benutzerdaten und Benutzereingaben möchten wir eine Datenbank erstellen.
+- SCRUM-18: Unit Test für Registrierung und Login implementieren.
+
+Die Stories wurden in größere Haupttasks aufgeteilt, um mehr Übersicht zu schaffen. Beispiele dafür sind:
+- Aufbau der Datenbank
+- Anlegen von Unit-Tests
+- Durchführung eines ersten Test - Deployments
+- Planung und Durchführung von Backups
+
+Das gesamte Sprint Backlog ist weiterhin im öffentlichen Jira-Board dokumentiert:
+
+https://helpinghands2025.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog
+
+Reflexion
+
+### Wie hat sich diese Sprint-Planung von der ersten unterschieden? Was lief einfacher oder besser?
+
+Im zweiten Sprint war unser Team besser mit dem Ablauf vertraut, wodurch die Planung strukturierter ablief. 
+Wir konnten Aufgaben präziser einschätzen und das Planning Meeting verlief effizienter, da Rollen und Erwartungen bereits klarer waren.
+
+### Welche konkreten Punkte aus eurer Sprint-Retrospektive haben diese Planung beeinflusst? Nennt ein Beispiel.
+
+Wir empfanden die Arbeit mit so vielen unterschiedlichen Subtasks innerhalb einer User-Story als unübersichtlich und haben uns darauf geeinigt einzelne Haupttasks für den zweiten Sprint zu definieren.
+
+### Was ist euer Sprint Goal für den zweiten Sprint, und wie baut es auf dem ersten auf?
+
+Unser Sprint Goal für Sprint 2 ist die Datenbank zu installieren und die Strukturen aufzubauen, sowie die Kommunikation zum Backend zu erstellen. Zusätzlich möchten wir wie in Jira notiert, immer ein Backup 
+nach Jedem Sprint durchführen. Plan für diese Woche ist zusätzlich ein Test-Deployment z.B. auf Multipass durchzuführen, um eventuelle Probleme zu indentifizieren. Desweiteren möchten wir
+Unit-Tests integrieren.
+
+### Wie habt ihr die Velocity (die im ersten Sprint abgeschlossene Arbeit) genutzt, um den Umfang von Sprint 2 zu bestimmen?
+
+Wir haben im ersten Sprint 10 Story Points abgeschlossen und deshalb einen ähnlichen Umfang für Sprint 2 angesetzt. Damit planen wir realistisch auf Basis erprobter Teamleistung.
+
+### Was ist der Unterschied zwischen dem Product Backlog und dem Sprint Backlog nach eurer zweiten Planung?
+
+Das Product Backlog enthält alle priorisierten Anforderungen und Ideen, die irgendwann umgesetzt werden sollen.
+
+Das Sprint Backlog ist eine Teilmenge davon: Es umfasst nur die Aufgaben, die für den zweiten Sprint konkret ausgewählt, geschätzt und zugeschnitten wurden, inklusive Tasks.
+
 ## Präsentation
 
 In dem Ordner (`/presentation`) liegen unsere ersten Entwürfe für die Projektpräsentation.  
