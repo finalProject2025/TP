@@ -111,6 +111,10 @@ Das gesamte Sprint Backlog ist weiterhin im öffentlichen Jira-Board dokumentier
 
 https://helpinghands2025.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog
 
+### Screenshot
+
+![Jira Board](./screenshots/Jira_Sprint2.png)
+
 Reflexion
 
 ### Wie hat sich diese Sprint-Planung von der ersten unterschieden? Was lief einfacher oder besser?
