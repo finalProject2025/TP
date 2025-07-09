@@ -4,18 +4,15 @@ import type { User, Post, CreatePostData, UpdatePostData, CreateMessageData, Cre
 const getApiBaseUrl = () => {
   const hostname = window.location.hostname;
 
-  // If accessing via localhost, use localhost for API
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:3002/api';
   }
 
-  // If accessing via external IP, use the same IP for API
   return `http://${hostname}:3002/api`;
 };
 
 const API_BASE_URL = getApiBaseUrl();
 
-// Helper function to get auth headers
 const getAuthHeaders = () => {
   const token = localStorage.getItem('auth_token');
   return {
@@ -24,7 +21,6 @@ const getAuthHeaders = () => {
   };
 };
 
-// Helper function to handle API responses
 const handleResponse = async (response: Response) => {
   if (response.status === 401) {
     localStorage.removeItem('auth_token');
@@ -32,16 +28,15 @@ const handleResponse = async (response: Response) => {
     window.location.href = '/';
     throw new Error('Unauthorized');
   }
-  
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: 'Unknown error' }));
     throw new Error(error.error || `HTTP ${response.status}`);
   }
-  
+
   return response.json();
 };
 
-// Extended Post interface for status field
 export interface ExtendedPost extends Post {
   status: 'active' | 'in_progress' | 'closed' | 'auto_closed';
   auto_close_date: string;
@@ -54,8 +49,6 @@ interface AuthResponse {
   message: string;
 }
 
-// API Functions
-// Helper functions
 export const formatTimeAgo = (dateString: string): string => {
   const now = new Date();
   const date = new Date(dateString);
@@ -83,7 +76,6 @@ export const getCategoryColor = (category: string): string => {
 };
 
 export const simpleApi = {
-  // Auth
   async register(userData: {
     email: string;
     password: string;
@@ -106,7 +98,6 @@ export const simpleApi = {
 
     const data = await response.json();
 
-    // Store token and user data
     if (data.token) {
       localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user_data', JSON.stringify(data.user));
@@ -131,7 +122,6 @@ export const simpleApi = {
 
     const data = await response.json();
 
-    // Store token and user data
     if (data.token) {
       localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user_data', JSON.stringify(data.user));
@@ -145,7 +135,6 @@ export const simpleApi = {
     localStorage.removeItem('user_data');
   },
 
-  // Posts - Alias für getAllPosts für Kompatibilität
   async getPosts(): Promise<ExtendedPost[]> {
     return this.getAllPosts();
   },
@@ -155,7 +144,7 @@ export const simpleApi = {
       method: 'GET',
       headers: getAuthHeaders(),
     });
-    
+
     const data = await handleResponse(response);
     return data.categories || [];
   },
@@ -171,59 +160,49 @@ export const simpleApi = {
     return data.post;
   },
 
-  // Help Offers
-  async offerHelp(postId: string, message?: string): Promise<any> {
+  async offerHelp(postId: string, message?: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/posts/${postId}/help`, {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify({
-        message: message || null
-      }),
+      body: JSON.stringify({ message: message || null }),
     });
-
     return handleResponse(response);
   },
 
-  async getHelpOffers(): Promise<any[]> {
+  async getHelpOffers(): Promise<unknown[]> {
     const response = await fetch(`${API_BASE_URL}/help-offers`, {
       method: 'GET',
       headers: getAuthHeaders(),
     });
-
     const data = await handleResponse(response);
     return data.help_offers || [];
   },
 
-  async markHelpOfferAsRead(offerId: string): Promise<any> {
+  async markHelpOfferAsRead(offerId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/help-offers/${offerId}/read`, {
       method: 'PUT',
       headers: getAuthHeaders(),
     });
-
     return handleResponse(response);
   },
 
-  async acceptHelpOffer(offerId: string): Promise<any> {
+  async acceptHelpOffer(offerId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/help-offers/${offerId}/accept`, {
       method: 'PUT',
       headers: getAuthHeaders(),
     });
-
     return handleResponse(response);
   },
 
-  async declineHelpOffer(offerId: string): Promise<any> {
+  async declineHelpOffer(offerId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/help-offers/${offerId}/decline`, {
       method: 'PUT',
       headers: getAuthHeaders(),
     });
-
     return handleResponse(response);
   },
 
-
-
-  async startConversation(otherUserId: string, postId?: string, initialMessage?: string): Promise<any> {
+  async startConversation(otherUserId: string, postId?: string, initialMessage?: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/conversations/start`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -233,11 +212,9 @@ export const simpleApi = {
         initial_message: initialMessage
       }),
     });
-
     return handleResponse(response);
   },
 
-  // Utility
   isAuthenticated(): boolean {
     return !!localStorage.getItem('auth_token');
   },
@@ -260,8 +237,7 @@ export const simpleApi = {
     return userData ? JSON.parse(userData) : null;
   },
 
-  // Ratings
-  async createRating(ratedUserId: string, postId: string, rating: number, comment?: string): Promise<any> {
+  async createRating(ratedUserId: string, postId: string, rating: number, comment?: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/ratings`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -272,29 +248,25 @@ export const simpleApi = {
         comment
       }),
     });
-
     return handleResponse(response);
   },
 
-  async getUserRatingSummary(userId: string): Promise<any> {
+  async getUserRatingSummary(userId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/users/${userId}/rating-summary`, {
       method: 'GET',
       headers: getAuthHeaders(),
     });
-
     return handleResponse(response);
   },
 
-  async getUserRatings(userId: string, limit: number = 10): Promise<any> {
+  async getUserRatings(userId: string, limit: number = 10): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/users/${userId}/ratings?limit=${limit}`, {
       method: 'GET',
       headers: getAuthHeaders(),
     });
-
     return handleResponse(response);
   },
 
-  // User Profile
   async getProfile(): Promise<User> {
     const response = await fetch(`${API_BASE_URL}/users/profile`, {
       method: 'GET',
@@ -320,23 +292,22 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  // POSTS
   async getAllPosts(filters?: PostFilters): Promise<ExtendedPost[]> {
     try {
       const params = new URLSearchParams();
       if (filters) {
         Object.entries(filters).forEach(([key, value]) => {
-                  if (value !== undefined && value !== '' && value !== null) {
-          params.append(key, value.toString());
-        }
+          if (value !== undefined && value !== '' && value !== null) {
+            params.append(key, value.toString());
+          }
         });
       }
-      
+
       const response = await fetch(`${API_BASE_URL}/posts?${params.toString()}`, {
         method: 'GET',
         headers: getAuthHeaders(),
       });
-      
+
       const data = await handleResponse(response);
       return data.posts || [];
     } catch (error) {
@@ -378,11 +349,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  // CATEGORIES (nur falls nicht vorhanden)
-  // getCategories ist bereits vorhanden
-
-  // MESSAGES (neue Versionen mit fetch)
-  async getMessages(type?: 'sent' | 'received' | 'all'): Promise<any> {
+  async getMessages(type?: 'sent' | 'received' | 'all'): Promise<unknown> {
     const params = type ? `?type=${type}` : '';
     const response = await fetch(`${API_BASE_URL}/messages${params}`, {
       method: 'GET',
@@ -391,7 +358,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getConversations(): Promise<any> {
+  async getConversations(): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages/conversations`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -407,7 +374,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async sendMessage(messageData: CreateMessageData): Promise<any> {
+  async sendMessage(messageData: CreateMessageData): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -416,7 +383,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getMessageById(id: string): Promise<any> {
+  async getMessageById(id: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages/${id}`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -424,7 +391,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async markAsRead(id: string): Promise<any> {
+  async markAsRead(id: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages/${id}/read`, {
       method: 'PUT',
       headers: getAuthHeaders(),
@@ -432,8 +399,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  // REVIEWS
-  async createReview(reviewData: CreateReviewData): Promise<any> {
+  async createReview(reviewData: CreateReviewData): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/reviews`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -442,7 +408,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getUserReviews(userId: string): Promise<any> {
+  async getUserReviews(userId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/reviews/user/${userId}`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -450,7 +416,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async canUserReview(userId: string, postId?: string): Promise<any> {
+  async canUserReview(userId: string, postId?: string): Promise<unknown> {
     const params = postId ? `?postId=${postId}` : '';
     const response = await fetch(`${API_BASE_URL}/reviews/can-review/${userId}${params}`, {
       method: 'GET',
@@ -459,7 +425,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async deleteReview(id: string): Promise<any> {
+  async deleteReview(id: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
@@ -467,7 +433,5 @@ export const simpleApi = {
     return handleResponse(response);
   },
 };
-
-// Duplicate exports removed - functions are already defined above
 
 export type { User, Post, AuthResponse };
