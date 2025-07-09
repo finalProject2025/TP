@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import LoginModal from "../components/LoginModal";
 import RegisterModal from "../components/RegisterModal";
 import ProfileModal from "../components/ProfileModal";
 import HelpOffersModal from "../components/HelpOffersModal";
 import ChatModal from "../components/ChatModal";
 import { simpleApi } from "../services/simpleApi";
+import ResetPasswordModal from '../components/ResetPasswordModal';
 
 import { useNotifications } from "../hooks/useNotifications";
 
@@ -23,10 +24,33 @@ function Landing() {
   const [currentUser, setCurrentUser] = useState<unknown>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { unreadCount } = useNotifications();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetToken, setResetToken] = useState('');
 
   useEffect(() => {
     checkAuthStatus();
-  }, []);
+    // Prüfe, ob die URL /reset-password enthält
+    console.log('Current pathname:', location.pathname);
+    console.log('Current search:', location.search);
+    if (location.pathname === '/reset-password') {
+      const params = new URLSearchParams(location.search);
+      const token = params.get('token');
+      const email = params.get('email');
+      console.log('Token:', token);
+      console.log('Email:', email);
+      if (token && email) {
+        setResetToken(token);
+        setResetEmail(decodeURIComponent(email));
+        setShowResetModal(true);
+        console.log('Setting modal to true');
+      }
+    } else {
+      setShowResetModal(false);
+    }
+  }, [location]);
 
   const checkAuthStatus = () => {
     const authenticated = simpleApi.isAuthenticated();
@@ -78,10 +102,16 @@ function Landing() {
     setIsHelpOffersModalOpen(false); // Close help offers modal
   };
 
+  const handleCloseResetModal = () => {
+    setShowResetModal(false);
+    // Nach Schließen Modal auf Startseite weiterleiten
+    navigate('/');
+  };
+
   return (
-    <div className="min-h-screen max-w-[1640px] mx-auto  shadow-2xl">
+    <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b border-gray-100 backdrop-blur-sm bg-opacity-95 px-10">
+      <nav className="bg-white shadow-sm border-b border-gray-100 backdrop-blur-sm bg-opacity-95">
         <div className="container-custom py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -387,7 +417,7 @@ function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden px-10">
+      <div className="relative bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -561,7 +591,7 @@ function Landing() {
       </div>
 
       {/* Features Section */}
-      <div className="bg-gradient-to-br from-white to-gray-50 py-20 px-10">
+      <div className="bg-gradient-to-br from-white to-gray-50 py-20">
         <div className="container-custom">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -654,8 +684,8 @@ function Landing() {
         </div>
       </div>
 
-      {/* Footer Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden px-10">
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full transform translate-x-32 -translate-y-32"></div>
@@ -706,6 +736,12 @@ function Landing() {
           otherUserName={chatModalData.otherUserName}
         />
       )}
+      <ResetPasswordModal
+        isOpen={showResetModal}
+        onClose={handleCloseResetModal}
+        email={resetEmail}
+        token={resetToken}
+      />
     </div>
   );
 }
