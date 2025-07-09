@@ -20,7 +20,7 @@ function Landing() {
     otherUserName: string;
   } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<unknown>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { unreadCount } = useNotifications();
 
