@@ -57,7 +57,7 @@ function SimplePostsPage() {
 
       const postsData = await simpleApi.getPosts();
       setPosts(postsData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading posts:', err);
       setError(err.message || 'Fehler beim Laden der Posts');
       showError('Fehler beim Laden der Posts');
@@ -75,7 +75,7 @@ function SimplePostsPage() {
     try {
       await simpleApi.offerHelp(post.id);
       showSuccess(`Hilfe-Angebot für "${post.title}" erfolgreich gesendet! Der Ersteller wird benachrichtigt.`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error offering help:', error);
       showError(error.message || 'Fehler beim Senden des Hilfe-Angebots');
     }
@@ -109,7 +109,7 @@ function SimplePostsPage() {
       }
 
       showSuccess(`Kontaktanfrage für "${post.title}" erfolgreich gesendet! Der Anbieter wird benachrichtigt.`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error contacting help offer:', error);
       showError(error.message || 'Fehler beim Senden der Kontaktanfrage');
     }

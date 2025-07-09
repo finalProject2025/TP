@@ -46,7 +46,7 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
       setError(null);
       const offers = await simpleApi.getHelpOffers();
       setHelpOffers(offers);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error loading help offers:', error);
       setError(error.message || 'Fehler beim Laden der Hilfe-Angebote');
     } finally {
@@ -72,7 +72,7 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
 
       // Show success message
       showSuccess('Hilfe-Angebot angenommen! Chat wird gestartet.');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error accepting help offer:', error);
       showError(error.message || 'Fehler beim Annehmen des Hilfe-Angebots');
     }
@@ -92,7 +92,7 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
       );
       
       showSuccess('Hilfe-Angebot abgelehnt.');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error declining help offer:', error);
       showError(error.message || 'Fehler beim Ablehnen des Hilfe-Angebots');
     }

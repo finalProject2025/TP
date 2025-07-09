@@ -35,7 +35,7 @@ function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostModalProp
       setLoadingCategories(true);
       const categoriesData = await simpleApi.getCategories();
       setCategories(categoriesData);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to load categories:', err);
       // Fallback categories
       setCategories(['Einkaufen', 'Gartenarbeit', 'Handwerk', 'Transport', 'Kinderbetreuung', 'Seniorenhilfe', 'Haustiere', 'Umzug', 'Technik', 'Sonstiges']);
@@ -104,7 +104,7 @@ function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostModalProp
       onClose();
       onPostCreated();
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(err.message || 'Fehler beim Erstellen des Posts');
       setError(err.message || 'Fehler beim Erstellen des Posts');
     } finally {

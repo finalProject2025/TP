@@ -131,7 +131,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
       // Optionally redirect or update app state
       window.location.reload(); // Simple reload for demo
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Registrierung fehlgeschlagen');
     } finally {
       setIsLoading(false);
