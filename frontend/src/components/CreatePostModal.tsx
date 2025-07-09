@@ -35,7 +35,7 @@ function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostModalProp
       setLoadingCategories(true);
       const categoriesData = await simpleApi.getCategories();
       setCategories(categoriesData);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Failed to load categories:', err);
       // Fallback categories
       setCategories(['Einkaufen', 'Gartenarbeit', 'Handwerk', 'Transport', 'Kinderbetreuung', 'Seniorenhilfe', 'Haustiere', 'Umzug', 'Technik', 'Sonstiges']);
@@ -79,13 +79,15 @@ function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostModalProp
     setIsLoading(true);
 
     try {
+      // User aus localStorage holen
+      const user = JSON.parse(localStorage.getItem('user_data') || '{}');
       await simpleApi.createPost({
         type: formData.type,
         title: formData.title.trim(),
         description: formData.description.trim(),
         category: formData.category,
         location: formData.location.trim() || 'Nicht angegeben',
-        postal_code: '12345' // Default for demo
+        postal_code: user.postal_code // Dynamisch aus User
       });
 
       // Success
@@ -104,7 +106,7 @@ function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostModalProp
       onClose();
       onPostCreated();
       
-    } catch (err: unknown) {
+    } catch (err: any) {
       showError(err.message || 'Fehler beim Erstellen des Posts');
       setError(err.message || 'Fehler beim Erstellen des Posts');
     } finally {
