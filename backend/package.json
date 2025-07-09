@@ -1,20 +1,38 @@
 {
-  "name": "backend",
+  "name": "neighborhood-help-backend",
   "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "module",
+  "description": "Backend for Neighborhood Help Platform",
   "main": "server-express.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server-express.js",
+    "dev": "nodemon server-express.js",
+    "migrate:up": "psql -h $DB_HOST -U $DB_USER -d $DB_NAME -f migrations/001_initial_schema.sql && psql -h $DB_HOST -U $DB_USER -d $DB_NAME -f migrations/002_chat_system.sql && psql -h $DB_HOST -U $DB_USER -d $DB_NAME -f migrations/003_help_offers.sql",
+    "migrate:reset": "psql -h $DB_HOST -U $DB_USER -d $DB_NAME -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "echo 'Linting skipped'",
+    "prod": "NODE_ENV=production node server-express.js"
   },
+  "keywords": [
+    "neighborhood",
+    "help",
+    "community"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.0.1",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3"
+    "morgan": "^1.10.0",
+    "nodemailer": "^7.0.5",
+    "pg": "^8.16.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
