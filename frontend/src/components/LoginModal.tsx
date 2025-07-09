@@ -37,7 +37,7 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalProps) {
       // Optionally redirect or update app state
       window.location.reload(); // Simple reload for demo
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'Login fehlgeschlagen');
     } finally {
       setIsLoading(false);

@@ -51,7 +51,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
 
       const data = await response.json();
       setRatingSummary(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading rating summary:', err);
       setError(err.message);
     } finally {

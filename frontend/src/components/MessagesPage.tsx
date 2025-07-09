@@ -55,7 +55,7 @@ function MessagesPage() {
 
     loadConversations();
     checkForUnreadHelpOffers();
-  }, []);
+  }, [showError]);
 
   const checkForUnreadHelpOffers = async () => {
     try {
@@ -96,7 +96,7 @@ function MessagesPage() {
         const errorData = await response.json();
         setError(errorData.error || 'Fehler beim Laden der Unterhaltungen');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading conversations:', err);
       setError('Fehler beim Laden der Unterhaltungen');
     } finally {
@@ -145,7 +145,7 @@ function MessagesPage() {
 
       // Conversations neu laden
       loadConversations();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting conversation:', error);
       showError(error.message || 'Fehler beim Löschen der Unterhaltung');
     }
