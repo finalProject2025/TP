@@ -10,6 +10,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/reset-password" element={<Landing />} />
           <Route path="/posts" element={<SimplePostsPage />} />
           <Route path="/messages" element={<MessagesPage />} />
         </Routes>
