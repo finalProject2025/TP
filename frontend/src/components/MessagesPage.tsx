@@ -55,7 +55,7 @@ function MessagesPage() {
 
     loadConversations();
     checkForUnreadHelpOffers();
-  }, []);
+  }, [showError]);
 
   const checkForUnreadHelpOffers = async () => {
     try {
