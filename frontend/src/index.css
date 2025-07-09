@@ -1,119 +1,120 @@
 @import "tailwindcss";
 
-body, html {
-    margin: 0;
-    padding: 0;
+/* Custom styles */
+
+/* Text truncation utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-#root {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    width: 100%;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: #f9fafb;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+.btn-primary {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #111827;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.input-field {
   width: 100%;
-  height: 80px;
-  background-color: #f8f9fa;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  z-index: 1000;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  outline: none;
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1200px;
+.input-field:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.container-custom {
+  max-width: 80rem;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
-.logo {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: rgb(7 84 126);
-    max-height: 52px;
-}
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .container-custom {
+    padding: 0 0.75rem;
+  }
 
-.nav-links {
-  display: flex;
-  align-items: center;
+  /* Ensure text doesn't break awkwardly */
+  h1, h2, h3 {
+    word-wrap: break-word;
+    hyphens: auto;
+  }
 
-}
-.nav-links a {
-    margin-left: 1rem;
-    text-decoration: none;
-    color: #333;
-    font-family: arial;
-    font-size: 1.4rem;
-}
+  /* Better touch targets */
+  button, a {
+    min-height: 44px;
+  }
 
-.nav-links a:hover {
-  color: #007bff;
-}
-.main {
-    width: 100vw; /* ganze Viewport-Breite */
-    background: rgb(255, 238, 205);
-    display: flex;
-    flex-wrap: wrap; /* oder nowrap, je nach Bedarf */
-}
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
 
-.slider {
-  position: relative;
-  width: 100%;
-  height: 60vh; /* Höhe des Sliders */
-  overflow: hidden; /* Überlauf verstecken */
-  display: flex;
-  justify-content: center; /* horizontal zentriert */
-  align-items: center;     /* vertikal zentriert */
-}
-.slider-textl {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
+  /* Mobile-friendly input fields */
+  .input-field {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 
-  display: flex;
-  justify-content: center; /* horizontal zentriert */
-  align-items: center;     /* vertikal zentriert */
+  /* Mobile navigation improvements */
+  .mobile-menu-item {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+  }
 
-  color: white;            /* falls der Text vor dunklem Bild besser lesbar sein soll */
-  text-align: center;
-  background: rgba(0, 0, 0, 0.3); /* optional: halbtransparenter Overlay */
-}
-
-.slider-textr {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-
-  display: flex;
-  justify-content: center; /* horizontal zentriert */
-  align-items: center;     /* vertikal zentriert */
-
-  color: white;            /* falls der Text vor dunklem Bild besser lesbar sein soll */
-  text-align: center;
-}
-
-.slider-text h1{
-    font-size: 5rem;
-    margin: 0;
-
-}
-.slider img {
-  width: 100%;
-  height: auto;
-  display: block;
+  .mobile-menu-item:hover {
+    background-color: #f3f4f6;
+  }
 }

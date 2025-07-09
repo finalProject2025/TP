@@ -19,6 +19,8 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   // Profile form state
   const [profileForm, setProfileForm] = useState({
+    first_name: '',
+    last_name: '',
     postal_code: '',
     profile_image_url: ''
   });
@@ -51,7 +53,7 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         ? 'http://localhost:3002'
         : `http://${window.location.hostname}:3002`;
 
-      const response = await fetch(`${apiBaseUrl}/api/profile`, {
+      const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -61,8 +63,10 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         const data = await response.json();
         setUser(data.user);
         setProfileForm({
+          first_name: data.user.first_name || '',
+          last_name: data.user.last_name || '',
           postal_code: data.user.postal_code || '',
-          profile_image_url: data.user.profile_image || ''
+          profile_image_url: data.user.profile_image_url || ''
         });
       } else if (response.status === 401) {
         localStorage.removeItem('auth_token');
@@ -90,7 +94,7 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         ? 'http://localhost:3002'
         : `http://${window.location.hostname}:3002`;
 
-      const response = await fetch(`${apiBaseUrl}/api/profile`, {
+      const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -102,6 +106,9 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
         setEditMode(false);
         showSuccess('Profil erfolgreich aktualisiert');
       } else {
@@ -142,15 +149,15 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         ? 'http://localhost:3002'
         : `http://${window.location.hostname}:3002`;
 
-      const response = await fetch(`${apiBaseUrl}/api/profile/password`, {
+      const response = await fetch(`${apiBaseUrl}/api/users/profile/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          current_password: passwordForm.current_password,
-          new_password: passwordForm.new_password
+          currentPassword: passwordForm.current_password,
+          newPassword: passwordForm.new_password
         })
       });
 
@@ -254,6 +261,32 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           <form onSubmit={handleProfileSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
+                Vorname
+              </label>
+              <input
+                type="text"
+                value={profileForm.first_name}
+                onChange={(e) => setProfileForm({...profileForm, first_name: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Vorname"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nachname
+              </label>
+              <input
+                type="text"
+                value={profileForm.last_name}
+                onChange={(e) => setProfileForm({...profileForm, last_name: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Nachname"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Postleitzahl
               </label>
               <input
@@ -262,6 +295,7 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 onChange={(e) => setProfileForm({...profileForm, postal_code: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="12345"
+                required
               />
             </div>
 

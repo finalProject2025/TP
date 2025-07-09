@@ -1,3 +1,4 @@
+import React from 'react';
 import LoadingSpinner from './LoadingSpinner';
 
 interface LoadingScreenProps {
@@ -70,7 +71,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">N</span>
             </div>
-            <span className="text-sm font-medium">Neighborly</span>
+            <span className="text-sm font-medium">NeighborHelp</span>
           </div>
         </div>
       )}

@@ -54,10 +54,12 @@ function SimplePostsPage() {
     try {
       setLoading(true);
       setError('');
+      const token = localStorage.getItem('auth_token');
+      console.log('[Frontend] Aktuelles Token beim Laden der Posts:', token);
 
       const postsData = await simpleApi.getPosts();
       setPosts(postsData);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Error loading posts:', err);
       setError(err.message || 'Fehler beim Laden der Posts');
       showError('Fehler beim Laden der Posts');
@@ -75,7 +77,7 @@ function SimplePostsPage() {
     try {
       await simpleApi.offerHelp(post.id);
       showSuccess(`Hilfe-Angebot für "${post.title}" erfolgreich gesendet! Der Ersteller wird benachrichtigt.`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error offering help:', error);
       showError(error.message || 'Fehler beim Senden des Hilfe-Angebots');
     }
@@ -109,7 +111,7 @@ function SimplePostsPage() {
       }
 
       showSuccess(`Kontaktanfrage für "${post.title}" erfolgreich gesendet! Der Anbieter wird benachrichtigt.`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error contacting help offer:', error);
       showError(error.message || 'Fehler beim Senden der Kontaktanfrage');
     }
