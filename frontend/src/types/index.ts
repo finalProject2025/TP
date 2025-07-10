@@ -131,6 +131,12 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+
+export interface ApiMessageResponse {
+  message: string;
+}
+
+
 export interface PostFilters {
   type?: string;
   category?: string;
