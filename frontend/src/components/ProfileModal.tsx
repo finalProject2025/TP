@@ -33,55 +33,54 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   useEffect(() => {
-    if (isOpen) {
-      loadProfile();
-    }
-  }, [isOpen]);
+    if (!isOpen) return;
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('auth_token');
 
-  const loadProfile = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('auth_token');
-
-      if (!token) {
-        showError('Sie müssen angemeldet sein');
-        onClose();
-        return;
-      }
-
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+        if (!token) {
+          showError('Sie müssen angemeldet sein');
+          onClose();
+          return;
         }
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        setProfileForm({
-          first_name: data.user.first_name || '',
-          last_name: data.user.last_name || '',
-          postal_code: data.user.postal_code || '',
-          profile_image_url: data.user.profile_image_url || ''
+        const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? 'http://localhost:3002'
+          : `http://${window.location.hostname}:3002`;
+
+        const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
-      } else if (response.status === 401) {
-        localStorage.removeItem('auth_token');
-        showError('Sitzung abgelaufen. Bitte melden Sie sich erneut an.');
-        onClose();
-      } else {
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+          setProfileForm({
+            first_name: data.user.first_name || '',
+            last_name: data.user.last_name || '',
+            postal_code: data.user.postal_code || '',
+            profile_image_url: data.user.profile_image_url || ''
+          });
+        } else if (response.status === 401) {
+          localStorage.removeItem('auth_token');
+          showError('Sitzung abgelaufen. Bitte melden Sie sich erneut an.');
+          onClose();
+        } else {
+          showError('Fehler beim Laden des Profils');
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
         showError('Fehler beim Laden des Profils');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      showError('Fehler beim Laden des Profils');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

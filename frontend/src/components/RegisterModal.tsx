@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Modal from './Modal.tsx';
+import Modal from './Modal';
 import { simpleApi } from '../services/simpleApi';
-import { useToast } from '../hooks/useToast.tsx';
+import { useToast } from '../hooks/useToast';
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -132,7 +132,8 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
       window.location.reload(); // Simple reload for demo
 
     } catch (err: unknown) {
-      setError(err.message || 'Registrierung fehlgeschlagen');
+      const errorMessage = err instanceof Error ? err.message : 'Fehler bei der Registrierung';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

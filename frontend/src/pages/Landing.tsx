@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import type { User } from '../types';
 import LoginModal from "../components/LoginModal";
 import RegisterModal from "../components/RegisterModal";
 import ProfileModal from "../components/ProfileModal";
@@ -9,7 +8,7 @@ import ChatModal from "../components/ChatModal";
 import { simpleApi } from "../services/simpleApi";
 import ResetPasswordModal from '../components/ResetPasswordModal';
 import { useNotifications } from "../hooks/useNotifications";
-
+import type { User } from '../types';
 
 function Landing() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);

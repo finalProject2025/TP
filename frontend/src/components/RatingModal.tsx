@@ -72,8 +72,8 @@ const RatingModal: React.FC<RatingModalProps> = ({
       
       onClose();
     } catch (error: unknown) {
-      console.error('Error creating rating:', error);
-      showError(error.message || 'Fehler beim Erstellen der Bewertung');
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Erstellen der Bewertung';
+      showError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

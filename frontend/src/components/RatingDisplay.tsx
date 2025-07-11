@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface RatingDisplayProps {
   userId: string;
@@ -29,35 +29,23 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    loadRatingSummary();
-  }, [userId]);
-
-  const loadRatingSummary = async () => {
+  const loadRatingSummary = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError('');
-
-      // Use dynamic API URL for network compatibility
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/users/${userId}/rating-summary`);
-
-      if (!response.ok) {
-        throw new Error('Fehler beim Laden der Bewertungen');
-      }
-
-      const data = await response.json();
+      const data = await simpleApi.getUserRatingSummary(userId);
       setRatingSummary(data);
+      setError('');
     } catch (err: unknown) {
-      console.error('Error loading rating summary:', err);
-      setError(err.message);
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Bewertung';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    loadRatingSummary();
+  }, [loadRatingSummary]);
 
   const getSizeStyles = () => {
     switch (size) {

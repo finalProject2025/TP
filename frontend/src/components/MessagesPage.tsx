@@ -97,8 +97,8 @@ function MessagesPage() {
         setError(errorData.error || 'Fehler beim Laden der Unterhaltungen');
       }
     } catch (err: unknown) {
-      console.error('Error loading conversations:', err);
-      setError('Fehler beim Laden der Unterhaltungen');
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Konversationen';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -146,8 +146,8 @@ function MessagesPage() {
       // Conversations neu laden
       loadConversations();
     } catch (error: unknown) {
-      console.error('Error deleting conversation:', error);
-      showError(error.message || 'Fehler beim Löschen der Unterhaltung');
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Löschen der Konversation';
+      setError(errorMessage);
     }
   };
 

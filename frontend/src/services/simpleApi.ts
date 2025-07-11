@@ -172,7 +172,7 @@ export const simpleApi = {
   },
 
   // Help Offers
-  async offerHelp(postId: string, message?: string): Promise<any> {
+  async offerHelp(postId: string, message?: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/posts/${postId}/help`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -184,7 +184,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getHelpOffers(): Promise<any[]> {
+  async getHelpOffers(): Promise<unknown[]> {
     const response = await fetch(`${API_BASE_URL}/help-offers`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -194,7 +194,7 @@ export const simpleApi = {
     return data.help_offers || [];
   },
 
-  async markHelpOfferAsRead(offerId: string): Promise<any> {
+  async markHelpOfferAsRead(offerId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/help-offers/${offerId}/read`, {
       method: 'PUT',
       headers: getAuthHeaders(),
@@ -203,7 +203,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async acceptHelpOffer(offerId: string): Promise<any> {
+  async acceptHelpOffer(offerId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/help-offers/${offerId}/accept`, {
       method: 'PUT',
       headers: getAuthHeaders(),
@@ -212,7 +212,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async declineHelpOffer(offerId: string): Promise<any> {
+  async declineHelpOffer(offerId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/help-offers/${offerId}/decline`, {
       method: 'PUT',
       headers: getAuthHeaders(),
@@ -223,7 +223,7 @@ export const simpleApi = {
 
 
 
-  async startConversation(otherUserId: string, postId?: string, initialMessage?: string): Promise<any> {
+  async startConversation(otherUserId: string, postId?: string, initialMessage?: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/conversations/start`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -261,7 +261,7 @@ export const simpleApi = {
   },
 
   // Ratings
-  async createRating(ratedUserId: string, postId: string, rating: number, comment?: string): Promise<any> {
+  async createRating(ratedUserId: string, postId: string, rating: number, comment?: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/ratings`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -276,7 +276,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getUserRatingSummary(userId: string): Promise<any> {
+  async getUserRatingSummary(userId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/users/${userId}/rating-summary`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -285,7 +285,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getUserRatings(userId: string, limit: number = 10): Promise<any> {
+  async getUserRatings(userId: string, limit: number = 10): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/users/${userId}/ratings?limit=${limit}`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -382,7 +382,7 @@ export const simpleApi = {
   // getCategories ist bereits vorhanden
 
   // MESSAGES (neue Versionen mit fetch)
-  async getMessages(type?: 'sent' | 'received' | 'all'): Promise<any> {
+  async getMessages(type?: 'sent' | 'received' | 'all'): Promise<unknown> {
     const params = type ? `?type=${type}` : '';
     const response = await fetch(`${API_BASE_URL}/messages${params}`, {
       method: 'GET',
@@ -391,7 +391,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getConversations(): Promise<any> {
+  async getConversations(): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages/conversations`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -407,7 +407,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async sendMessage(messageData: CreateMessageData): Promise<any> {
+  async sendMessage(messageData: CreateMessageData): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -416,7 +416,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getMessageById(id: string): Promise<any> {
+  async getMessageById(id: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages/${id}`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -424,7 +424,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async markAsRead(id: string): Promise<any> {
+  async markAsRead(id: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/messages/${id}/read`, {
       method: 'PUT',
       headers: getAuthHeaders(),
@@ -433,7 +433,7 @@ export const simpleApi = {
   },
 
   // REVIEWS
-  async createReview(reviewData: CreateReviewData): Promise<any> {
+  async createReview(reviewData: CreateReviewData): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/reviews`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -442,7 +442,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getUserReviews(userId: string): Promise<any> {
+  async getUserReviews(userId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/reviews/user/${userId}`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -450,7 +450,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async canUserReview(userId: string, postId?: string): Promise<any> {
+  async canUserReview(userId: string, postId?: string): Promise<unknown> {
     const params = postId ? `?postId=${postId}` : '';
     const response = await fetch(`${API_BASE_URL}/reviews/can-review/${userId}${params}`, {
       method: 'GET',
@@ -459,7 +459,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async deleteReview(id: string): Promise<any> {
+  async deleteReview(id: string): Promise<unknown> {
     const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),

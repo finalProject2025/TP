@@ -94,9 +94,10 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
         navigate('/');
         onClose();
       }, 2000); // 2 Sekunden warten, damit der User die Erfolgsmeldung sieht
-    } catch (err: any) {
-      setError(err.message || 'Fehler beim Zurücksetzen des Passworts');
-      showError(err.message || 'Fehler beim Zurücksetzen des Passworts');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Zurücksetzen des Passworts';
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setIsLoading(false);
     }

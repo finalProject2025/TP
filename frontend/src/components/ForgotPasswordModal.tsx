@@ -14,7 +14,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen, onClo
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const { showSuccess, showError } = useToast();
+  const { showSuccess } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,9 +26,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ isOpen, onClo
       setSuccess('Wenn die E-Mail existiert, wurde eine Nachricht versendet.');
       showSuccess('Wenn die E-Mail existiert, wurde eine Nachricht versendet.');
       setEmail('');
-    } catch (err: any) {
-      setError(err.message || 'Fehler beim Senden der E-Mail');
-      showError(err.message || 'Fehler beim Senden der E-Mail');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Zurücksetzen des Passworts';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

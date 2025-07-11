@@ -47,8 +47,8 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
       const offers = await simpleApi.getHelpOffers();
       setHelpOffers(offers);
     } catch (error: unknown) {
-      console.error('Error loading help offers:', error);
-      setError(error.message || 'Fehler beim Laden der Hilfe-Angebote');
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Laden der Hilfe-Angebote';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -73,8 +73,8 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
       // Show success message
       showSuccess('Hilfe-Angebot angenommen! Chat wird gestartet.');
     } catch (error: unknown) {
-      console.error('Error accepting help offer:', error);
-      showError(error.message || 'Fehler beim Annehmen des Hilfe-Angebots');
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Annehmen des Hilfe-Angebots';
+      showError(errorMessage);
     }
   };
 
@@ -93,8 +93,8 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
       
       showSuccess('Hilfe-Angebot abgelehnt.');
     } catch (error: unknown) {
-      console.error('Error declining help offer:', error);
-      showError(error.message || 'Fehler beim Ablehnen des Hilfe-Angebots');
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Ablehnen des Hilfe-Angebots';
+      showError(errorMessage);
     }
   };
 

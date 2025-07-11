@@ -98,8 +98,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         onPostClosed();
       }
     } catch (error: unknown) {
-      console.error('🔧 Error closing post:', error);
-      showError(error.message || 'Fehler beim Schließen des Posts');
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Schließen des Posts';
+      showError(errorMessage);
     } finally {
       setIsClosing(false);
     }

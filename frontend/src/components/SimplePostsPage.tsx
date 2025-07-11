@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
@@ -36,37 +36,24 @@ function SimplePostsPage() {
 
   const { showSuccess, showError } = useToast();
 
-  useEffect(() => {
-    // Check authentication first
-    if (!simpleApi.isAuthenticated()) {
-      showError('Sie müssen angemeldet sein, um Posts zu sehen');
-      // Redirect to home page after a short delay
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
-      return;
-    }
-
-    loadPosts();
-  }, []);
-
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError('');
-      const token = localStorage.getItem('auth_token');
-      console.log('[Frontend] Aktuelles Token beim Laden der Posts:', token);
-
       const postsData = await simpleApi.getPosts();
       setPosts(postsData);
-    } catch (err: any) {
-      console.error('Error loading posts:', err);
-      setError(err.message || 'Fehler beim Laden der Posts');
+      setError('');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Laden der Posts';
+      setError(errorMessage);
       showError('Fehler beim Laden der Posts');
     } finally {
       setLoading(false);
     }
-  };
+  }, [showError]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
 
   const handleHelp = async (post: ExtendedPost) => {
     if (!simpleApi.isAuthenticated()) {
@@ -77,9 +64,10 @@ function SimplePostsPage() {
     try {
       await simpleApi.offerHelp(post.id);
       showSuccess(`Hilfe-Angebot für "${post.title}" erfolgreich gesendet! Der Ersteller wird benachrichtigt.`);
-    } catch (error: any) {
-      console.error('Error offering help:', error);
-      showError(error.message || 'Fehler beim Senden des Hilfe-Angebots');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Hilfe anbieten';
+      setError(errorMessage);
+      showError(errorMessage);
     }
   };
 
@@ -111,9 +99,10 @@ function SimplePostsPage() {
       }
 
       showSuccess(`Kontaktanfrage für "${post.title}" erfolgreich gesendet! Der Anbieter wird benachrichtigt.`);
-    } catch (error: any) {
-      console.error('Error contacting help offer:', error);
-      showError(error.message || 'Fehler beim Senden der Kontaktanfrage');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Fehler beim Kontaktieren des Hilfeangebots';
+      setError(errorMessage);
+      showError(errorMessage);
     }
   };
 

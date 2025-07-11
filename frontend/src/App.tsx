@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import SimplePostsPage from './components/SimplePostsPage';
 import MessagesPage from './components/MessagesPage';
-import { ToastProvider } from './hooks/useToast';
+import ToastProvider from './hooks/ToastProvider';
 
 function App() {
   return (
