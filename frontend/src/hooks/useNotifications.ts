@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { simpleApi } from '../services/simpleApi';
+import { simpleApi, getApiBaseUrl } from '../services/simpleApi';
 
 export function useNotifications() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -16,10 +16,7 @@ export function useNotifications() {
       const token = localStorage.getItem('auth_token');
       console.log('Fetching unread count with token:', token ? 'Token exists' : 'No token');
 
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-      const response = await fetch(`${apiBaseUrl}/api/messages/unread-count`, {
+      const response = await fetch(`${getApiBaseUrl()}/messages/unread-count`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

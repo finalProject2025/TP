@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import { useToast } from '../hooks/useToast';
 import RatingModal from './RatingModal';
 import RatingDisplay from './RatingDisplay';
-import type { ExtendedPost } from '../services/simpleApi';
+import { simpleApi, getApiBaseUrl } from '../services/simpleApi';
+import type { ExtendedPost } from '../types';
 
 interface PostDetailModalProps {
   post: ExtendedPost;
@@ -24,6 +25,10 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
 }) => {
   const [isClosing, setIsClosing] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [hasRated, setHasRated] = useState(false);
+  const [canRate, setCanRate] = useState(false);
+  const [ratingReason, setRatingReason] = useState('');
+  const [checkingRating, setCheckingRating] = useState(true);
   const { showSuccess, showError } = useToast();
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -68,19 +73,9 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
   };
 
   const handleClosePost = async () => {
-    if (!currentUserId || currentUserId !== post.user_id) {
-      showError('Sie können nur Ihre eigenen Posts schließen');
-      return;
-    }
-
     setIsClosing(true);
     try {
-      // Use dynamic API URL for network compatibility
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/posts/${post.id}/close`, {
+      const response = await fetch(`${getApiBaseUrl()}/posts/${post.id}/close`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -118,6 +113,29 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
     };
     return icons[category] || '💡';
   };
+
+  // Prüfe ob bereits bewertet wurde
+  useEffect(() => {
+    const checkExistingRating = async () => {
+      if (!currentUserId || currentUserId === post.user_id) {
+        setCheckingRating(false);
+        return;
+      }
+
+      try {
+        const data = await simpleApi.checkExistingRating(post.id);
+        setHasRated(data.hasRated || false);
+        setCanRate(data.canRate || false);
+        setRatingReason(data.reason || '');
+      } catch (error) {
+        console.error('Error checking rating:', error);
+      } finally {
+        setCheckingRating(false);
+      }
+    };
+
+    checkExistingRating();
+  }, [currentUserId, post.id, post.user_id]);
 
   return (
     <Modal isOpen={true} onClose={onClose} title="">
@@ -227,13 +245,22 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                   {post.type === 'request' ? 'Helfen' : 'Kontakt aufnehmen'}
                 </button>
 
-                <button
-                  onClick={() => setIsRatingModalOpen(true)}
-                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-lg font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                >
-                  <span style={{ fontSize: '16px' }}>⭐</span>
-                  Bewerten
-                </button>
+                {checkingRating ? (
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                ) : hasRated ? (
+                  <div className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gray-100 text-gray-600">
+                    <span style={{ fontSize: '16px' }}>✅</span>
+                    Bereits bewertet
+                  </div>
+                ) : canRate && (
+                  <button
+                    onClick={() => setIsRatingModalOpen(true)}
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-lg font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  >
+                    <span style={{ fontSize: '16px' }}>⭐</span>
+                    Bewerten
+                  </button>
+                )}
               </>
             )}
 
@@ -265,13 +292,22 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
                 <p className="text-xs text-gray-400 mb-4">Status: {getStatusText(post.status)}</p>
 
                 {/* Rating Button für abgeschlossene Posts */}
-                <button
-                  onClick={() => setIsRatingModalOpen(true)}
-                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 mx-auto"
-                >
-                  <span style={{ fontSize: '16px' }}>⭐</span>
-                  {post.user.first_name} bewerten
-                </button>
+                {checkingRating ? (
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                ) : hasRated ? (
+                  <div className="text-center text-gray-500">
+                    <p className="text-sm">Bereits bewertet</p>
+                    <p className="text-xs">Status: {getStatusText(post.status)}</p>
+                  </div>
+                ) : canRate && (
+                  <button
+                    onClick={() => setIsRatingModalOpen(true)}
+                    className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-2 rounded-lg font-medium hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 mx-auto"
+                  >
+                    <span style={{ fontSize: '16px' }}>⭐</span>
+                    {post.user.first_name} bewerten
+                  </button>
+                )}
               </div>
             )}
 
@@ -294,8 +330,8 @@ const PostDetailModal: React.FC<PostDetailModalProps> = ({
         postId={post.id}
         postTitle={post.title}
         onRatingSubmitted={() => {
-          // Refresh rating display after successful rating
-          window.location.reload(); // Simple refresh for now
+          setHasRated(true);
+          setIsRatingModalOpen(false);
         }}
       />
     </Modal>

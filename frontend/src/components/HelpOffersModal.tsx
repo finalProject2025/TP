@@ -1,22 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
-
-interface HelpOffer {
-  id: string;
-  post_id: string;
-  helper_id: string;
-  message: string;
-  status: 'pending' | 'accepted' | 'declined';
-  is_read: boolean;
-  created_at: string;
-  post_title: string;
-  post_type: string;
-  post_category: string;
-  first_name: string;
-  last_name: string;
-  postal_code: string;
-}
+import { formatTimeAgo } from '../utils/dateUtils';
+import type { HelpOffer } from '../types';
 
 interface HelpOffersModalProps {
   isOpen: boolean;
@@ -98,17 +84,7 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
     }
   };
 
-  const formatTimeAgo = (dateString: string): string => {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffInHours < 1) return 'vor wenigen Minuten';
-    if (diffInHours < 24) return `vor ${diffInHours} Std.`;
-    if (diffInHours < 168) return `vor ${Math.floor(diffInHours / 24)} Tagen`;
-
-    return date.toLocaleDateString('de-DE');
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {

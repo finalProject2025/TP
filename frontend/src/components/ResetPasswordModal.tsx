@@ -4,6 +4,8 @@ import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
 import LoadingSpinner from './LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
+import { validatePassword } from '../utils/validation';
+import { inputStyle } from '../utils/styles';
 
 interface ResetPasswordModalProps {
   isOpen: boolean;
@@ -25,27 +27,7 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
 
-  const validatePassword = (password: string): string[] => {
-    const errors: string[] = [];
 
-    if (password.length < 8) {
-      errors.push('Mindestens 8 Zeichen');
-    }
-    if (!/[A-Z]/.test(password)) {
-      errors.push('Mindestens ein Großbuchstabe');
-    }
-    if (!/[a-z]/.test(password)) {
-      errors.push('Mindestens ein Kleinbuchstabe');
-    }
-    if (!/[0-9]/.test(password)) {
-      errors.push('Mindestens eine Zahl');
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      errors.push('Mindestens ein Sonderzeichen');
-    }
-
-    return errors;
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -103,15 +85,7 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '12px',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    fontSize: '16px',
-    outline: 'none',
-    transition: 'border-color 0.2s'
-  };
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Passwort zurücksetzen">

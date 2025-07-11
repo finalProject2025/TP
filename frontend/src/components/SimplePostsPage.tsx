@@ -7,9 +7,11 @@ import ChatModal from './ChatModal';
 import PostDetailModal from './PostDetailModal';
 import LoadingScreen from './LoadingScreen';
 import RatingDisplay from './RatingDisplay';
+import { formatTimeAgo } from '../utils/dateUtils';
+import { getApiBaseUrl } from '../services/simpleApi';
 
-// Import the ExtendedPost type from simpleApi
-import type { ExtendedPost } from '../services/simpleApi';
+// Import the ExtendedPost type from types
+import type { ExtendedPost } from '../types';
 
 function SimplePostsPage() {
   const [posts, setPosts] = useState<ExtendedPost[]>([]);
@@ -78,12 +80,7 @@ function SimplePostsPage() {
     }
 
     try {
-      // Use dynamic API URL for network compatibility
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/posts/${post.id}/contact`, {
+      const response = await fetch(`${getApiBaseUrl()}/posts/${post.id}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,17 +134,7 @@ function SimplePostsPage() {
 
   const categories = ['Einkaufen', 'Gartenarbeit', 'Haustiere', 'Handwerk', 'Transport', 'Kinderbetreuung', 'Senioren', 'Sonstiges'];
 
-  const formatTimeAgo = (dateString: string): string => {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffInHours < 1) return 'vor wenigen Minuten';
-    if (diffInHours < 24) return `vor ${diffInHours} Std.`;
-    if (diffInHours < 168) return `vor ${Math.floor(diffInHours / 24)} Tagen`;
-
-    return date.toLocaleDateString('de-DE');
-  };
 
   if (loading) {
     return (

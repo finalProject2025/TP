@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import { useToast } from '../hooks/useToast';
+import { getApiBaseUrl } from '../services/simpleApi';
 
 interface RatingModalProps {
   isOpen: boolean;
@@ -35,12 +36,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
 
     setIsSubmitting(true);
     try {
-      // Use dynamic API URL for network compatibility
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/ratings`, {
+      const response = await fetch(`${getApiBaseUrl()}/ratings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,9 +85,9 @@ const RatingModal: React.FC<RatingModalProps> = ({
   const renderStars = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      // Stern ist gefüllt wenn: geklickt ODER (gehovered UND noch nichts geklickt)
-      const isFilled = i <= rating || (i <= hoveredRating && rating === 0);
-      const isPreview = i <= hoveredRating && rating === 0; // Nur Hover-Vorschau
+      // Stern ist gelb, wenn er kleiner/gleich hoveredRating ODER (kein Hover aktiv und kleiner/gleich rating)
+      const isHovered = hoveredRating > 0;
+      const shouldBeYellow = isHovered ? i <= hoveredRating : i <= rating;
 
       stars.push(
         <button
@@ -105,14 +101,18 @@ const RatingModal: React.FC<RatingModalProps> = ({
             border: 'none',
             fontSize: '32px',
             cursor: 'pointer',
-            color: isFilled ? '#fbbf24' : '#d1d5db',
-            transition: 'color 0.2s',
             padding: '4px',
-            opacity: isPreview ? 0.6 : 1 // Vorschau ist transparenter
+            transition: 'all 0.2s',
+            width: '40px',
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            lineHeight: '1'
           }}
           disabled={isSubmitting}
         >
-          ⭐
+          {shouldBeYellow ? '⭐' : '☆'}
         </button>
       );
     }

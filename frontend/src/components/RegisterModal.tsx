@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Modal from './Modal';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
+import { validatePassword } from '../utils/validation';
+import { inputStyle } from '../utils/styles';
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -23,27 +25,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
   const [error, setError] = useState('');
   const { showSuccess } = useToast();
 
-  const validatePassword = (password: string): string[] => {
-    const errors: string[] = [];
 
-    if (password.length < 8) {
-      errors.push('Mindestens 8 Zeichen');
-    }
-    if (!/[A-Z]/.test(password)) {
-      errors.push('Mindestens ein Großbuchstabe');
-    }
-    if (!/[a-z]/.test(password)) {
-      errors.push('Mindestens ein Kleinbuchstabe');
-    }
-    if (!/[0-9]/.test(password)) {
-      errors.push('Mindestens eine Zahl');
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-      errors.push('Mindestens ein Sonderzeichen');
-    }
-
-    return errors;
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -139,15 +121,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '12px',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    fontSize: '16px',
-    outline: 'none',
-    transition: 'border-color 0.2s'
-  };
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Konto erstellen">

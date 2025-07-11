@@ -1,19 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { simpleApi } from '../services/simpleApi';
+import { simpleApi, getApiBaseUrl } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
 import ChatModal from './ChatModal';
 import HelpOffersModal from './HelpOffersModal';
 import LoadingScreen from './LoadingScreen';
 import ConfirmModal from './ConfirmModal';
-
-interface Conversation {
-  other_user_id: string;
-  other_user_name: string;
-  last_message: string;
-  last_message_time: string;
-  unread_count: number;
-}
+import { formatTimeAgo } from '../utils/dateUtils';
+import type { Conversation } from '../types';
 
 function MessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -80,10 +74,7 @@ function MessagesPage() {
       setError('');
       
       const token = localStorage.getItem('auth_token');
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-      const response = await fetch(`${apiBaseUrl}/api/conversations`, {
+      const response = await fetch(`${getApiBaseUrl()}/conversations`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -123,13 +114,8 @@ function MessagesPage() {
   };
 
   const deleteConversation = async (conversation: Conversation) => {
-    // Use dynamic API URL for network compatibility
-    const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:3002'
-      : `http://${window.location.hostname}:3002`;
-
     try {
-      const response = await fetch(`${apiBaseUrl}/api/conversations/${conversation.other_user_id}`, {
+      const response = await fetch(`${getApiBaseUrl()}/conversations/${conversation.other_user_id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
@@ -160,19 +146,7 @@ function MessagesPage() {
     setIsHelpOffersModalOpen(false);
   };
 
-  const formatTimeAgo = (dateString: string): string => {
-    if (!dateString) return '';
-    
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'vor wenigen Minuten';
-    if (diffInHours < 24) return `vor ${diffInHours} Std.`;
-    if (diffInHours < 168) return `vor ${Math.floor(diffInHours / 24)} Tagen`;
-    
-    return date.toLocaleDateString('de-DE');
-  };
+
 
   if (loading) {
     return (

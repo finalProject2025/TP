@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import LoadingSpinner from './LoadingSpinner';
 import { useToast } from '../hooks/useToast';
+import { getApiBaseUrl } from '../services/simpleApi';
 import type { User } from '../types';
 
 interface ProfileModalProps {
@@ -45,11 +46,7 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           return;
         }
 
-        const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'http://localhost:3002'
-          : `http://${window.location.hostname}:3002`;
-
-        const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+        const response = await fetch(`${getApiBaseUrl()}/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -89,11 +86,7 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       setSaving(true);
       const token = localStorage.getItem('auth_token');
 
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+      const response = await fetch(`${getApiBaseUrl()}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,11 +137,7 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       setSaving(true);
       const token = localStorage.getItem('auth_token');
 
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-
-      const response = await fetch(`${apiBaseUrl}/api/users/profile/password`, {
+      const response = await fetch(`${getApiBaseUrl()}/users/profile/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -180,12 +169,8 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     try {
       const token = localStorage.getItem('auth_token');
       
-      const apiBaseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3002'
-        : `http://${window.location.hostname}:3002`;
-      
       // Call logout API
-      await fetch(`${apiBaseUrl}/api/auth/logout`, {
+      await fetch(`${getApiBaseUrl()}/auth/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

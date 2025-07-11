@@ -1,23 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { simpleApi } from '../services/simpleApi';
+import type { RatingSummary } from '../types';
 
 interface RatingDisplayProps {
   userId: string;
   showCount?: boolean;
   size?: 'small' | 'medium' | 'large';
   inline?: boolean;
-}
-
-interface RatingSummary {
-  total_ratings: number;
-  average_rating: number;
-  rating_distribution: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
-  };
 }
 
 const RatingDisplay: React.FC<RatingDisplayProps> = ({
@@ -48,7 +37,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
     loadRatingSummary();
   }, [loadRatingSummary]);
 
-  const getSizeStyles = () => {
+  const getSizeStyles = (): { fontSize: string; starSize: string; gap: string } => {
     switch (size) {
       case 'small':
         return {
@@ -72,8 +61,17 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
   };
 
   const renderStars = (rating: number, starSize: string) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
+    // Stelle sicher, dass rating zwischen 0 und 5 liegt
+    const clampedRating = Math.max(0, Math.min(5, rating));
+    
+    // Berechne die Anzahl der vollen Sterne
+    const fullStars = Math.floor(clampedRating);
+    
+    // Berechne, ob ein Halbstern angezeigt werden soll
+    const decimalPart = clampedRating - fullStars;
+    const hasHalfStar = decimalPart >= 0.3 && decimalPart <= 0.7;
+    
+    // Berechne die Anzahl der leeren Sterne
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
     return (
@@ -134,13 +132,16 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
         color: '#9ca3af',
         fontSize: getSizeStyles().fontSize
       }}>
-        <span style={{ fontSize: getSizeStyles().starSize, color: '#d1d5db' }}>⭐</span>
+        {Array.from({ length: 5 }, (_, i) => (
+          <span key={`empty-${i}`} style={{ fontSize: getSizeStyles().starSize, color: '#d1d5db' }}>☆</span>
+        ))}
         Noch keine Bewertungen
       </span>
     );
   }
 
   const styles = getSizeStyles();
+  const averageRating = parseFloat(ratingSummary.average_rating) || 0;
 
   return (
     <span style={{
@@ -150,10 +151,10 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
       fontSize: styles.fontSize,
       color: '#374151'
     }}>
-      {renderStars(ratingSummary.average_rating, styles.starSize)}
+      {renderStars(averageRating, String(styles.starSize))}
       
       <span style={{ fontWeight: '500' }}>
-        {ratingSummary.average_rating.toFixed(1)}
+        {averageRating.toFixed(1)}
       </span>
       
       {showCount && (

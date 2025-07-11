@@ -1,7 +1,7 @@
-import type { User, Post, CreatePostData, UpdatePostData, CreateMessageData, CreateReviewData, PostFilters } from '../types';
+import type { User, Post, CreatePostData, UpdatePostData, CreateMessageData, CreateReviewData, PostFilters, ExtendedPost, AuthResponse, HelpOffer } from '../types';
 
 // Dynamic API URL detection
-const getApiBaseUrl = () => {
+export const getApiBaseUrl = () => {
   const hostname = window.location.hostname;
 
   // If accessing via localhost, use localhost for API
@@ -41,33 +41,9 @@ const handleResponse = async (response: Response) => {
   return response.json();
 };
 
-// Extended Post interface for status field
-export interface ExtendedPost extends Post {
-  status: 'active' | 'in_progress' | 'closed' | 'auto_closed';
-  auto_close_date: string;
-  user: User & { initials?: string };
-}
 
-interface AuthResponse {
-  user: User;
-  token: string;
-  message: string;
-}
 
-// API Functions
-// Helper functions
-export const formatTimeAgo = (dateString: string): string => {
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return 'vor wenigen Sekunden';
-  if (diffInSeconds < 3600) return `vor ${Math.floor(diffInSeconds / 60)} Min.`;
-  if (diffInSeconds < 86400) return `vor ${Math.floor(diffInSeconds / 3600)} Std.`;
-  if (diffInSeconds < 604800) return `vor ${Math.floor(diffInSeconds / 86400)} Tagen`;
-
-  return date.toLocaleDateString('de-DE');
-};
 
 export const getCategoryColor = (category: string): string => {
   const colors: { [key: string]: string } = {
@@ -184,7 +160,7 @@ export const simpleApi = {
     return handleResponse(response);
   },
 
-  async getHelpOffers(): Promise<unknown[]> {
+  async getHelpOffers(): Promise<HelpOffer[]> {
     const response = await fetch(`${API_BASE_URL}/help-offers`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -269,8 +245,17 @@ export const simpleApi = {
         rated_user_id: ratedUserId,
         post_id: postId,
         rating,
-        comment
+        comment: comment || null
       }),
+    });
+
+    return handleResponse(response);
+  },
+
+  async checkExistingRating(postId: string): Promise<{ hasRated: boolean; canRate: boolean; reason: string; postId: number; raterId: string }> {
+    const response = await fetch(`${API_BASE_URL}/ratings/check/${postId}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
     });
 
     return handleResponse(response);
@@ -494,4 +479,4 @@ export const simpleApi = {
 
 // Duplicate exports removed - functions are already defined above
 
-export type { User, Post, AuthResponse };
+export type { User, Post, AuthResponse, HelpOffer, ExtendedPost };

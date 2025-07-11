@@ -151,3 +151,58 @@ export interface ReviewStats {
   totalReviews: number;
   ratingDistribution: { [key: number]: number };
 }
+
+// Extended Post interface for status field
+export interface ExtendedPost extends Post {
+  status: 'active' | 'in_progress' | 'closed' | 'auto_closed';
+  auto_close_date: string;
+  user: User & { initials?: string };
+}
+
+// Auth Response interface
+export interface AuthResponse {
+  user: User;
+  token: string;
+  message: string;
+}
+
+// Help Offer interface
+export interface HelpOffer {
+  id: string;
+  post_id: string;
+  helper_id: string;
+  message: string;
+  status: 'pending' | 'accepted' | 'declined';
+  is_read: boolean;
+  created_at: string;
+  post_title: string;
+  post_type: string;
+  post_category: string;
+  first_name: string;
+  last_name: string;
+  postal_code: string;
+}
+
+// Chat Message interface (different from Message in types/index.ts)
+export interface ChatMessage {
+  id: string;
+  content: string;
+  sender_id: string;
+  receiver_id: string;
+  created_at: string;
+  sender_name?: string;
+  is_own_message?: boolean;
+}
+
+// Rating Summary interface
+export interface RatingSummary {
+  total_ratings: number;
+  average_rating: number;
+  rating_distribution: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
+}

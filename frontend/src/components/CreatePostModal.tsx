@@ -3,6 +3,7 @@ import Modal from './Modal';
 import { useToast } from '../hooks/useToast';
 import { simpleApi } from '../services/simpleApi';
 import LoadingSpinner from './LoadingSpinner';
+import { inputStyle } from '../utils/styles';
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -115,15 +116,7 @@ function CreatePostModal({ isOpen, onClose, onPostCreated }: CreatePostModalProp
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '12px',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    fontSize: '16px',
-    outline: 'none',
-    transition: 'border-color 0.2s'
-  };
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Neue Hilfe-Anfrage erstellen">

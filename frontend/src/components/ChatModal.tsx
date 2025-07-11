@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useToast } from '../hooks/useToast';
-
-interface Message {
-  id: string;
-  content: string;
-  sender_id: string;
-  receiver_id: string;
-  created_at: string;
-  sender_name?: string;
-  is_own_message?: boolean;
-}
+import { getApiBaseUrl } from '../services/simpleApi';
+import type { ChatMessage } from '../types';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -22,7 +14,7 @@ interface ChatModalProps {
 }
 
 const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, otherUserName, postTitle, postType, onDeleteConversation }: ChatModalProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -35,18 +27,13 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Memoized API base URL
-  const apiBaseUrl = useMemo(() => {
-    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:3002'
-      : `http://${window.location.hostname}:3002`;
-  }, []);
+
 
   const loadMessages = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
       const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${apiBaseUrl}/api/messages/${otherUserId}`, {
+      const response = await fetch(`${getApiBaseUrl()}/messages/${otherUserId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -78,7 +65,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [apiBaseUrl, otherUserId]);
+  }, [otherUserId]);
 
   useEffect(() => {
     if (isOpen) {
@@ -120,7 +107,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
     const messageToSend = newMessage.trim();
 
     // Optimistic update - add message immediately
-    const tempMessage: Message = {
+    const tempMessage: ChatMessage = {
       id: `temp-${Date.now()}`,
       content: messageToSend,
       sender_id: 'current-user',
@@ -135,7 +122,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
 
     try {
       const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${apiBaseUrl}/api/conversations/start`, {
+      const response = await fetch(`${getApiBaseUrl()}/conversations/start`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -166,7 +153,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
     } finally {
       setSending(false);
     }
-  }, [newMessage, sending, otherUserId, apiBaseUrl, loadMessages, showError]);
+  }, [newMessage, sending, otherUserId, loadMessages, showError]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
