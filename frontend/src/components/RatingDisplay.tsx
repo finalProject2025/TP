@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { simpleApi } from '../services/simpleApi';
 
 interface RatingDisplayProps {
   userId: string;
@@ -32,7 +33,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
   const loadRatingSummary = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await simpleApi.getUserRatingSummary(userId);
+      const data = await simpleApi.getUserRatingSummary(userId) as RatingSummary;
       setRatingSummary(data);
       setError('');
     } catch (err: unknown) {
