@@ -141,7 +141,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
   }
 
   const styles = getSizeStyles();
-  const averageRating = parseFloat(ratingSummary.average_rating) || 0;
+  const averageRating = ratingSummary.average_rating || 0;
 
   return (
     <span style={{
