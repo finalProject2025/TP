@@ -130,3 +130,34 @@ Add an @import to your CSS file that imports Tailwind CSS.
 ```bash
 npm run dev
 ```
+
+## Warum ist der Button nicht klickbar?
+
+Wenn du folgenden Code in deinem Layout hast:
+
+```tsx
+<div className="absolute inset-0 opacity-10">
+```
+
+… dann legst du ein **unsichtbares (aber interaktives)** Overlay über den gesamten Bereich.
+
+### 🔒 Problem:
+
+* Dieses `div` liegt **über** deinen Buttons.
+* Obwohl es transparent ist (`opacity-10`), **blockiert es Mausklicks und Interaktionen**, weil es **standardmäßig `pointer-events: auto`** hat.
+* Das heißt: Alle Klicks gehen **an das Overlay**, nicht an die Buttons darunter.
+
+### ✅ Lösung: `pointer-events-none`
+
+```tsx
+<div className="absolute inset-0 opacity-10 pointer-events-none">
+```
+
+* Mit `pointer-events-none` wird das Overlay **durchlässig für Mausereignisse**.
+* Es blockiert keine Klicks mehr – alle Interaktionen gehen wieder an die darunterliegenden Buttons und Links.
+
+---
+
+### 💡 Merksatz:
+
+> Verwende `pointer-events-none`, wenn du ein visuelles Overlay hast, das **nicht mit der Maus interagieren soll**.
