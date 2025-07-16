@@ -6,6 +6,7 @@ import { simpleApi } from "../services/simpleApi";
 import { useToast } from "../hooks/useToast";
 import { validatePassword } from "../utils/validation";
 import { inputStyle } from "../utils/styles";
+import TermsModal from "./TermsModal";
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ function RegisterModal({
   const { showSuccess } = useToast();
   const [isCodeOfConductOpen, setIsCodeOfConductOpen] = useState(false);
   const [isDatenschutzOpen, setIsDatenschutzOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -341,9 +343,13 @@ function RegisterModal({
             />
             <label className="text-sm text-gray-600">
               Ich stimme den{" "}
-              <a href="#" className="text-blue-600 hover:text-blue-500">
-                Nutzungsbedingungen,
-              </a>{" "}
+              <button
+                type="button"
+                onClick={() => setIsTermsOpen(true)}
+                className="text-blue-600 hover:text-blue-500 underline"
+              >
+                Nutzungsbedingungen
+              </button>{" "}
               dem{" "}
               <button
                 type="button"
@@ -407,6 +413,7 @@ function RegisterModal({
         isOpen={isDatenschutzOpen}
         onClose={() => setIsDatenschutzOpen(false)}
       />
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </>
   );
 }

@@ -22,7 +22,7 @@ const TermsModal = ({ isOpen, onClose }: TermsModalProps) => {
         <h3 className="font-semibold mt-4">2. Leistungen der App</h3>
         <p>
           Die App dient der Vermittlung von Hilfeleistungen unter Nachbar:innen
-          (z. B. Einkaufen, Gassi gehen, handwerkliche Hilfe).
+          (z.B. Einkaufen, Gassi gehen, handwerkliche Hilfe).
         </p>
 
         <h3 className="font-semibold mt-4">3. Registrierung & Benutzerkonto</h3>
