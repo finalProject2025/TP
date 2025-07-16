@@ -11,8 +11,6 @@ import { useNotifications } from "../hooks/useNotifications";
 import type { User } from "../types";
 import CodeOfConductModal from "../components/CodeOfConductModal";
 
-
-
 function Landing() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -694,7 +692,7 @@ function Landing() {
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full transform translate-x-32 -translate-y-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full transform -translate-x-24 translate-y-24"></div>
         </div>
@@ -713,16 +711,15 @@ function Landing() {
             Jetzt kostenlos registrieren →
           </button>
           <p className="text-sm text-gray-300 mt-4">
-  Lesen Sie unseren{' '}
-  <button
-    onClick={openCodeOfConductModal}
-    className="underline text-white hover:text-blue-200"
-  >
-    Verhaltenskodex
-  </button>
-  .
-</p>
-
+            Lesen Sie unseren{" "}
+            <button
+              onClick={openCodeOfConductModal}
+              className="underline text-white hover:text-blue-200"
+            >
+              Verhaltenskodex
+            </button>
+            .
+          </p>
         </div>
       </div>
 
@@ -761,10 +758,9 @@ function Landing() {
         token={resetToken}
       />
       <CodeOfConductModal
-  isOpen={isCodeOfConductModalOpen}
-  onClose={() => setIsCodeOfConductModalOpen(false)}
-/>
-
+        isOpen={isCodeOfConductModalOpen}
+        onClose={() => setIsCodeOfConductModalOpen(false)}
+      />
     </div>
   );
 }
