@@ -1,6 +1,3 @@
-// src/components/CodeOfConduct.tsx
-import React from 'react';
-
 const CodeOfConduct: React.FC = () => {
   return (
     <div className="space-y-6 p-4">

@@ -1,4 +1,3 @@
-// src/components/CodeOfConductModal.tsx
 import React from 'react';
 import Modal from './Modal';
 import CodeOfConduct from './CodeOfConduct';

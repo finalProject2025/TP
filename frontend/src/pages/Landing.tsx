@@ -11,6 +11,8 @@ import { useNotifications } from "../hooks/useNotifications";
 import type { User } from "../types";
 import CodeOfConductModal from "../components/CodeOfConductModal";
 import DatenschutzModal from "../components/PrivacyPolicyModal";
+import ImprintModal from "../components/ImprintModal";
+
 
 function Landing() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -36,7 +38,8 @@ function Landing() {
     useState(false);
   const openCodeOfConductModal = () => setIsCodeOfConductModalOpen(true);
 
-  const [isDatenschutzModalOpen, setIsDatenschutzModalOpen] = useState(false); // Neu
+  const [isDatenschutzModalOpen, setIsDatenschutzModalOpen] = useState(false);
+  const [isImprintOpen, setIsImprintOpen] = useState(false);
 
   useEffect(() => {
     checkAuthStatus();
@@ -720,13 +723,20 @@ function Landing() {
               className="underline text-white hover:text-blue-200"
             >
               Verhaltenskodex
-            </button>{" "}
-            und unsere{" "}
+            </button>
+            , unsere{" "}
             <button
               onClick={() => setIsDatenschutzModalOpen(true)}
               className="underline text-white hover:text-blue-200"
             >
               Datenschutzerklärung
+            </button>{" "}
+            und das{" "}
+            <button
+              onClick={() => setIsImprintOpen(true)}
+              className="underline text-white hover:text-blue-200"
+            >
+              Impressum
             </button>
             .
           </p>
@@ -774,6 +784,10 @@ function Landing() {
       <DatenschutzModal
         isOpen={isDatenschutzModalOpen}
         onClose={() => setIsDatenschutzModalOpen(false)}
+      />
+      <ImprintModal
+        isOpen={isImprintOpen}
+        onClose={() => setIsImprintOpen(false)}
       />
     </div>
   );
