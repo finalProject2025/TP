@@ -281,7 +281,11 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
           <label className="text-sm text-gray-600">
             Ich stimme den{' '}
             <a href="#" className="text-blue-600 hover:text-blue-500">
-              Nutzungsbedingungen
+              Nutzungsbedingungen,
+            </a>{' '}
+            dem{' '}
+            <a href="#" className="text-blue-600 hover:text-blue-500">
+              Verhaltenskodex
             </a>{' '}
             und der{' '}
             <a href="#" className="text-blue-600 hover:text-blue-500">
