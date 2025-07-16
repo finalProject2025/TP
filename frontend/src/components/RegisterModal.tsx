@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
 import CodeOfConductModal from "./CodeOfConductModal";
-import DatenschutzModal from "./DatenschutzModal";
+import DatenschutzModal from "./PrivacyPolicyModal";
 import { simpleApi } from "../services/simpleApi";
 import { useToast } from "../hooks/useToast";
 import { validatePassword } from "../utils/validation";
