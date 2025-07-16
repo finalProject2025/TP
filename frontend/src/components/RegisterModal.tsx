@@ -5,6 +5,8 @@ import { useToast } from '../hooks/useToast';
 import { validatePassword } from '../utils/validation';
 import { inputStyle } from '../utils/styles';
 
+
+
 interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,13 +21,14 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
     password: '',
     confirmPassword: ''
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [error, setError] = useState('');
+  const [showTerms, setShowTerms] = useState(false);
+
   const { showSuccess } = useToast();
-
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,13 +38,11 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
       [name]: value
     });
 
-    // Passwort-Validierung
     if (name === 'password') {
       setPasswordErrors(validatePassword(value));
       setPasswordMatch(value === formData.confirmPassword || formData.confirmPassword === '');
     }
 
-    // Passwort-Bestätigung prüfen
     if (name === 'confirmPassword') {
       setPasswordMatch(value === formData.password);
     }
@@ -51,14 +52,12 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
     e.preventDefault();
     setError('');
 
-    // Validierung vor Submit
     const currentPasswordErrors = validatePassword(formData.password);
     const currentPasswordMatch = formData.password === formData.confirmPassword;
 
     setPasswordErrors(currentPasswordErrors);
     setPasswordMatch(currentPasswordMatch);
 
-    // Name validation
     if (!formData.name.trim()) {
       setError('Bitte geben Sie Ihren Namen ein');
       return;
@@ -82,25 +81,19 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
     setIsLoading(true);
 
     try {
-      // Split name into first and last name
-      const nameParts = formData.name.trim().split(' ');
       const first_name = nameParts[0] || '';
-      const last_name = nameParts.slice(1).join(' ') || first_name.charAt(0); // Fallback to first letter if no last name
+      const last_name = nameParts.slice(1).join(' ') || first_name.charAt(0);
 
       const response = await simpleApi.register({
         email: formData.email,
         password: formData.password,
         first_name,
         last_name,
-        postal_code: '12345' // Default for demo
+        postal_code: '12345'
       });
 
-
-
-      // Show success message
       showSuccess(`Willkommen, ${response.user.first_name}! Registrierung erfolgreich.`);
 
-      // Close modal and reset form
       onClose();
       setFormData({
         name: '',
@@ -110,9 +103,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
         confirmPassword: ''
       });
 
-      // Optionally redirect or update app state
-      window.location.reload(); // Simple reload for demo
-
+      window.location.reload();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Fehler bei der Registrierung';
       setError(errorMessage);
@@ -120,8 +111,6 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
       setIsLoading(false);
     }
   };
-
-
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Konto erstellen">
@@ -136,6 +125,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Name */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
             Vollständiger Name *
@@ -149,14 +139,13 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
             onChange={handleChange}
             placeholder="Max Mustermann"
             style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = '#2563eb'}
-            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
           <p className="text-xs text-gray-500 mt-1">
             Bitte geben Sie Vor- und Nachname ein (z.B. "Max Mustermann")
           </p>
         </div>
 
+        {/* Email */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             E-Mail-Adresse
@@ -170,11 +159,10 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
             onChange={handleChange}
             placeholder="ihre.email@beispiel.de"
             style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = '#2563eb'}
-            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </div>
 
+        {/* Adresse */}
         <div>
           <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
             Adresse
@@ -188,11 +176,10 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
             onChange={handleChange}
             placeholder="Musterstraße 123, 12345 Stadt"
             style={inputStyle}
-            onFocus={(e) => e.target.style.borderColor = '#2563eb'}
-            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </div>
 
+        {/* Passwort */}
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
             Passwort
@@ -209,11 +196,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
               ...inputStyle,
               borderColor: passwordErrors.length > 0 ? '#ef4444' : '#d1d5db'
             }}
-            onFocus={(e) => e.target.style.borderColor = passwordErrors.length > 0 ? '#ef4444' : '#2563eb'}
-            onBlur={(e) => e.target.style.borderColor = passwordErrors.length > 0 ? '#ef4444' : '#d1d5db'}
           />
-
-          {/* Passwort-Anforderungen */}
           {formData.password && (
             <div className="mt-2 space-y-1">
               <p className="text-xs font-medium text-gray-700">Passwort-Anforderungen:</p>
@@ -223,20 +206,19 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
                 { check: /[a-z]/.test(formData.password), text: 'Mindestens ein Kleinbuchstabe' },
                 { check: /[0-9]/.test(formData.password), text: 'Mindestens eine Zahl' },
                 { check: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password), text: 'Mindestens ein Sonderzeichen' }
-              ].map((requirement, index) => (
-                <div key={index} className="flex items-center text-xs">
-                  <span className={`mr-2 ${requirement.check ? 'text-green-500' : 'text-red-500'}`}>
-                    {requirement.check ? '✓' : '✗'}
+              ].map((req, i) => (
+                <div key={i} className="flex items-center text-xs">
+                  <span className={`mr-2 ${req.check ? 'text-green-500' : 'text-red-500'}`}>
+                    {req.check ? '✓' : '✗'}
                   </span>
-                  <span className={requirement.check ? 'text-green-700' : 'text-red-600'}>
-                    {requirement.text}
-                  </span>
+                  <span className={req.check ? 'text-green-700' : 'text-red-600'}>{req.text}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
+        {/* Passwort bestätigen */}
         <div>
           <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
             Passwort bestätigen
@@ -253,11 +235,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
               ...inputStyle,
               borderColor: !passwordMatch ? '#ef4444' : '#d1d5db'
             }}
-            onFocus={(e) => e.target.style.borderColor = !passwordMatch ? '#ef4444' : '#2563eb'}
-            onBlur={(e) => e.target.style.borderColor = !passwordMatch ? '#ef4444' : '#d1d5db'}
           />
-
-          {/* Passwort-Match Anzeige */}
           {formData.confirmPassword && (
             <div className="mt-2">
               <div className="flex items-center text-xs">
@@ -272,6 +250,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
           )}
         </div>
 
+        {/* Nutzungsbedingungen */}
         <div className="flex items-start">
           <input
             type="checkbox"
@@ -280,7 +259,14 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
           />
           <label className="text-sm text-gray-600">
             Ich stimme den{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-500">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowTerms((prev) => !prev);
+              }}
+              className="text-blue-600 hover:text-blue-500 underline"
+            >
               Nutzungsbedingungen
             </a>{' '}
             und der{' '}
@@ -291,6 +277,43 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
           </label>
         </div>
 
+        {showTerms && (
+  <div className="mt-4 p-5 border border-blue-200 bg-blue-50 rounded-xl text-sm text-gray-800 max-h-72 overflow-y-auto transition-all duration-300">
+    <h4 className="font-semibold mb-3 text-blue-800">Nutzungsbedingungen</h4>
+
+    <p className="mb-3">
+      Diese App dient der Vermittlung von nachbarschaftlicher Hilfe
+      <br />
+      (z. B. Einkäufe, handwerkliche Unterstützung).
+    </p>
+
+    <ul className="space-y-2 pl-2">
+      <li className="flex items-start">
+        <span className="text-blue-600 mr-2 mt-0.5">✓</span>
+        <span>Die Nutzung ist nur ab 16 Jahren erlaubt.</span>
+      </li>
+      <li className="flex items-start">
+        <span className="text-blue-600 mr-2 mt-0.5">✓</span>
+        <span>
+          Inhalte dürfen nicht illegal, diskriminierend oder&nbsp;
+          <span className="pl-1 inline-block">beleidigend</span> sein.
+        </span>
+      </li>
+      <li className="flex items-start">
+        <span className="text-blue-600 mr-2 mt-0.5">✓</span>
+        <span>Die Betreiber übernehmen keine Haftung für getroffene Vereinbarungen.</span>
+      </li>
+      <li className="flex items-start">
+        <span className="text-blue-600 mr-2 mt-0.5">✓</span>
+        <span>Konten können bei Missbrauch gesperrt werden.</span>
+      </li>
+    </ul>
+
+    <p className="mt-4 text-xs italic text-gray-600">Stand: Juli 2025</p>
+  </div>
+)}
+
+        {/* Submit */}
         <button
           type="submit"
           disabled={isLoading || passwordErrors.length > 0 || !passwordMatch || !formData.password || !formData.confirmPassword}
@@ -307,7 +330,7 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps)
         </button>
       </form>
 
-      {/* Sign in link */}
+      {/* Switch to login */}
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
           Bereits ein Konto?{' '}

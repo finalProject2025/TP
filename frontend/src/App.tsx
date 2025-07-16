@@ -3,6 +3,7 @@ import Landing from './pages/Landing';
 import SimplePostsPage from './components/SimplePostsPage';
 import MessagesPage from './components/MessagesPage';
 import ToastProvider from './hooks/ToastProvider';
+import TermsPage from './pages/TermsPage';
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
           <Route path="/reset-password" element={<Landing />} />
           <Route path="/posts" element={<SimplePostsPage />} />
           <Route path="/messages" element={<MessagesPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/terms" element={<TermsPage />} />
         </Routes>
       </Router>
     </ToastProvider>

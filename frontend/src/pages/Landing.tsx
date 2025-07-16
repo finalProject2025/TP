@@ -10,6 +10,10 @@ import ResetPasswordModal from '../components/ResetPasswordModal';
 import { useNotifications } from "../hooks/useNotifications";
 import type { User } from '../types';
 
+
+
+
+
 function Landing() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -30,7 +34,8 @@ function Landing() {
   const [resetEmail, setResetEmail] = useState('');
   const [resetToken, setResetToken] = useState('');
 
-  useEffect(() => {
+
+ useEffect(() => {
     checkAuthStatus();
     // Prüfe, ob die URL /reset-password enthält
     console.log('Current pathname:', location.pathname);
@@ -687,11 +692,12 @@ function Landing() {
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-10 z-0">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full transform translate-x-32 -translate-y-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full transform -translate-x-24 translate-y-24"></div>
         </div>
-        <div className="container-custom text-center px-4">
+
+        <div className="container-custom text-center px-4 relative z-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Bereit, Ihre Nachbarschaft zu entdecken?
           </h2>
@@ -699,14 +705,29 @@ function Landing() {
             Schließen Sie sich Tausenden von hilfsbereiten Nachbarn an und
             machen Sie den ersten Schritt.
           </p>
-          <button
-            onClick={openRegisterModal}
-            className="bg-white text-blue-600 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-50 transition-colors shadow-lg text-base sm:text-lg"
-          >
-            Jetzt kostenlos registrieren →
-          </button>
+
+          <div className="flex flex-col items-center space-y-4">
+            <button
+              onClick={openRegisterModal}
+              className="bg-white text-blue-600 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-50 transition-colors shadow-lg text-base sm:text-lg"
+            >
+              Jetzt kostenlos registrieren →
+            </button>
+
+            {/* Link zu Nutzungsbedingungen */}
+            <Link
+              to="/terms"
+              className="underline text-white hover:text-blue-200 text-sm transition duration-200"
+            >
+              Nutzungsbedingungen
+            </Link>
+          </div>
         </div>
       </div>
+
+
+
+
 
       {/* Modals */}
       <LoginModal
