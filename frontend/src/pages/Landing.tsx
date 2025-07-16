@@ -12,7 +12,7 @@ import type { User } from "../types";
 import CodeOfConductModal from "../components/CodeOfConductModal";
 import DatenschutzModal from "../components/PrivacyPolicyModal";
 import ImprintModal from "../components/ImprintModal";
-
+import TermsModal from "../components/TermsModal";
 
 function Landing() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -40,6 +40,7 @@ function Landing() {
 
   const [isDatenschutzModalOpen, setIsDatenschutzModalOpen] = useState(false);
   const [isImprintOpen, setIsImprintOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   useEffect(() => {
     checkAuthStatus();
@@ -737,6 +738,13 @@ function Landing() {
               className="underline text-white hover:text-blue-200"
             >
               Impressum
+            </button>{" "}
+            sowie die{" "}
+            <button
+              onClick={() => setIsTermsOpen(true)}
+              className="underline text-white hover:text-blue-200"
+            >
+              Nutzungsbedingungen
             </button>
             .
           </p>
@@ -789,6 +797,7 @@ function Landing() {
         isOpen={isImprintOpen}
         onClose={() => setIsImprintOpen(false)}
       />
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </div>
   );
 }
