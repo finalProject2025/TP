@@ -6,9 +6,12 @@ import ProfileModal from "../components/ProfileModal";
 import HelpOffersModal from "../components/HelpOffersModal";
 import ChatModal from "../components/ChatModal";
 import { simpleApi } from "../services/simpleApi";
-import ResetPasswordModal from '../components/ResetPasswordModal';
+import ResetPasswordModal from "../components/ResetPasswordModal";
 import { useNotifications } from "../hooks/useNotifications";
-import type { User } from '../types';
+import type { User } from "../types";
+import CodeOfConductModal from "../components/CodeOfConductModal";
+
+
 
 function Landing() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -27,25 +30,29 @@ function Landing() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showResetModal, setShowResetModal] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetToken, setResetToken] = useState('');
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetToken, setResetToken] = useState("");
+
+  const [isCodeOfConductModalOpen, setIsCodeOfConductModalOpen] =
+    useState(false);
+  const openCodeOfConductModal = () => setIsCodeOfConductModalOpen(true);
 
   useEffect(() => {
     checkAuthStatus();
     // Prüfe, ob die URL /reset-password enthält
-    console.log('Current pathname:', location.pathname);
-    console.log('Current search:', location.search);
-    if (location.pathname === '/reset-password') {
+    console.log("Current pathname:", location.pathname);
+    console.log("Current search:", location.search);
+    if (location.pathname === "/reset-password") {
       const params = new URLSearchParams(location.search);
-      const token = params.get('token');
-      const email = params.get('email');
-      console.log('Token:', token);
-      console.log('Email:', email);
+      const token = params.get("token");
+      const email = params.get("email");
+      console.log("Token:", token);
+      console.log("Email:", email);
       if (token && email) {
         setResetToken(token);
         setResetEmail(decodeURIComponent(email));
         setShowResetModal(true);
-        console.log('Setting modal to true');
+        console.log("Setting modal to true");
       }
     } else {
       setShowResetModal(false);
@@ -105,7 +112,7 @@ function Landing() {
   const handleCloseResetModal = () => {
     setShowResetModal(false);
     // Nach Schließen Modal auf Startseite weiterleiten
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -705,6 +712,17 @@ function Landing() {
           >
             Jetzt kostenlos registrieren →
           </button>
+          <p className="text-sm text-gray-300 mt-4">
+  Lesen Sie unseren{' '}
+  <button
+    onClick={openCodeOfConductModal}
+    className="underline text-white hover:text-blue-200"
+  >
+    Verhaltenskodex
+  </button>
+  .
+</p>
+
         </div>
       </div>
 
@@ -742,6 +760,11 @@ function Landing() {
         email={resetEmail}
         token={resetToken}
       />
+      <CodeOfConductModal
+  isOpen={isCodeOfConductModalOpen}
+  onClose={() => setIsCodeOfConductModalOpen(false)}
+/>
+
     </div>
   );
 }
