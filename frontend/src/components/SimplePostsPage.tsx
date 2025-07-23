@@ -281,7 +281,7 @@ const loadPosts = useCallback(async () => {
             <p className="text-red-700 mb-6">{error}</p>
             <button
               onClick={loadPosts}
-              className="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+              className="bg-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700  shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
             >
               Erneut versuchen
             </button>
