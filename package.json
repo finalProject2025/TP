@@ -1,0 +1,23 @@
+{
+  "name": "neighborhood-help-platform",
+  "version": "1.0.0",
+  "description": "Full-stack Neighborhood Help Platform",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev:ts",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend:ps": "cd backend; npm run dev:ts",
+    "dev:frontend:ps": "cd frontend; npm run dev",
+    "dev:ps": "concurrently \"npm run dev:backend:ps\" \"npm run dev:frontend:ps\"",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  }
+}
