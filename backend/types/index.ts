@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+            "module": "ESNext",
+                "moduleResolution": "bundler",
+                    "allowSyntheticDefaultImports": true,
+                        "esModuleInterop": true,
+                            "allowJs": true,
+                                "checkJs": false,
+                                    "outDir": "./dist",
+                                        "rootDir": "./",
+                                            "strict": false,
+                                                "noImplicitAny": false,
+                                                    "strictNullChecks": false,
+                                                        "strictFunctionTypes": false,
+                                                            "noImplicitReturns": false,
+                                                                "noFallthroughCasesInSwitch": false,
+                                                                    "noUncheckedIndexedAccess": false,
+                                                                        "noImplicitOverride": false,
+                                                                            "noPropertyAccessFromIndexSignature": false,
+                                                                                "exactOptionalPropertyTypes": false,
+                                                                                    "skipLibCheck": true,
+                                                                                        "forceConsistentCasingInFileNames": true,
+                                                                                            "resolveJsonModule": true,
+                                                                                                "declaration": false,
+                                                                                                    "sourceMap": true,
+                                                                                                        "removeComments": false,
+                                                                                                            "noEmitOnError": false,
+                                                                                                                "experimentalDecorators": true,
+                                                                                                                    "emitDecoratorMetadata": true,
+                                                                                                                        "baseUrl": ".",
+                                                                                                                            "paths": {
+            "*": ["*", "types/*"]
+        }
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.js"
+    ],
+        "exclude": [
+            "node_modules",
+            "dist"
+        ],
+            "ts-node": {
+        "esm": true,
+            "experimentalSpecifierResolution": "node"
+    }
+} 
