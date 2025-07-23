@@ -1,7 +1,19 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useToast } from '../hooks/useToast';
+import { useNotifications } from '../hooks/useNotifications';
 import { getApiBaseUrl } from '../services/simpleApi';
 import type { ChatMessage } from '../types';
+
+// XSS-Schutz: HTML-Escaping-Funktion
+const escapeHtml = (text: string): string => {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+};
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -22,12 +34,19 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { showError } = useToast();
+  const { refreshUnreadCount } = useNotifications();
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      // Verwende setTimeout um sicherzustellen, dass das DOM aktualisiert ist
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'end'
+        });
+      }, 100);
+    }
   }, []);
-
-
 
   const loadMessages = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -53,7 +72,6 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
         });
       } else {
         if (!silent) {
-          console.log('No messages found or error:', response.status);
           setMessages([]);
         }
       }
@@ -71,6 +89,8 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
     if (isOpen) {
       // Initial load
       loadMessages();
+      // Sofortige Aktualisierung des unreadCount beim Öffnen des Chats
+      refreshUnreadCount();
 
       // Set up polling with silent updates
       intervalRef.current = setInterval(() => {
@@ -90,8 +110,17 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
         intervalRef.current = null;
       }
     }
-  }, [isOpen, loadMessages]);
+  }, [isOpen, loadMessages, refreshUnreadCount]);
 
+  // Scroll to bottom when messages are loaded or new messages arrive
+  useEffect(() => {
+    // Scroll to bottom when messages are first loaded
+    if (messages.length > 0 && !loading) {
+      scrollToBottom();
+    }
+  }, [messages.length, loading, scrollToBottom]);
+
+  // Additional scroll when new messages are added
   useEffect(() => {
     // Only scroll if new messages were added
     if (messages.length > lastMessageCount) {
@@ -99,12 +128,16 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
     }
   }, [messages.length, lastMessageCount, scrollToBottom]);
 
-
-
   const sendMessage = useCallback(async () => {
     if (!newMessage.trim() || sending) return;
 
     const messageToSend = newMessage.trim();
+
+    // Frontend-Validierung für Nachrichtenlänge
+    if (messageToSend.length > 1000) {
+      showError('Nachricht zu lang (max. 1000 Zeichen)');
+      return;
+    }
 
     // Optimistic update - add message immediately
     const tempMessage: ChatMessage = {
@@ -206,7 +239,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
         }}>
           <div>
             <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600', color: '#111827' }}>
-              💬 Chat mit {otherUserName}
+              💬 Chat mit {escapeHtml(otherUserName)}
             </h3>
             {postTitle && (
               <div style={{
@@ -219,7 +252,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
                 fontWeight: '500',
                 display: 'inline-block'
               }}>
-                📋 {postType === 'request' ? 'Hilfe-Anfrage' : 'Hilfe-Angebot'}: {postTitle}
+                📋 {postType === 'request' ? 'Hilfe-Anfrage' : 'Hilfe-Angebot'}: {escapeHtml(postTitle)}
               </div>
             )}
           </div>
@@ -243,6 +276,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fee2e2'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 title="Unterhaltung löschen"
+                aria-label="Unterhaltung löschen"
               >
                 🗑️
               </button>
@@ -257,6 +291,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
                 color: '#6b7280',
                 padding: '4px'
               }}
+              aria-label="Chat schließen"
             >
               ×
             </button>
@@ -313,7 +348,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
                   color: message.is_own_message ? 'white' : '#374151'
                 }}>
                   <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.4' }}>
-                    {message.content}
+                    {escapeHtml(message.content)}
                   </p>
                   <p style={{ 
                     margin: '4px 0 0 0', 
@@ -348,10 +383,11 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
               padding: '8px 12px',
               border: '1px solid #d1d5db',
               borderRadius: '20px',
-              fontSize: '14px',
+              fontSize: '16px',
               outline: 'none'
             }}
             disabled={sending}
+            aria-label="Nachricht eingeben"
           />
           <button
             onClick={sendMessage}
@@ -366,6 +402,7 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
               fontWeight: '500',
               cursor: sending ? 'not-allowed' : 'pointer'
             }}
+            aria-label="Nachricht senden"
           >
             {sending ? '...' : 'Senden'}
           </button>

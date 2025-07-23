@@ -1,10 +1,10 @@
 {
-  "name": "neighborhood-help-frontend",
+  "name": "neighborly-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "build:prod": "NODE_ENV=production tsc -b && vite build --mode production",
     "lint": "eslint .",
@@ -12,8 +12,11 @@
     "serve": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@react-oauth/google": "^0.12.2",
     "@tailwindcss/vite": "^4.1.8",
     "@types/node": "^22.15.28",
+    "dotenv": "^17.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1",
@@ -24,6 +27,7 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",

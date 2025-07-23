@@ -40,3 +40,17 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Google Login Button Full Width */
+.google-login-container {
+  width: 100% !important;
+}
+
+.google-login-container > div {
+  width: 100% !important;
+}
+
+.google-login-container iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}

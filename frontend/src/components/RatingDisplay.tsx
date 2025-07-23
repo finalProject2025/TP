@@ -84,7 +84,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
         {/* Half star */}
         {hasHalfStar && (
           <span key="half" style={{ fontSize: starSize, color: '#fbbf24', position: 'relative' }}>
-            <span style={{ color: '#d1d5db' }}>⭐</span>
+            <span style={{ color: '#d1d5db' }}>☆</span>
             <span style={{ 
               position: 'absolute', 
               left: 0, 
@@ -98,7 +98,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
         
         {/* Empty stars */}
         {Array.from({ length: emptyStars }, (_, i) => (
-          <span key={`empty-${i}`} style={{ fontSize: starSize, color: '#d1d5db' }}>⭐</span>
+          <span key={`empty-${i}`} style={{ fontSize: starSize, color: '#d1d5db' }}>☆</span>
         ))}
       </span>
     );
@@ -113,7 +113,7 @@ const RatingDisplay: React.FC<RatingDisplayProps> = ({
         color: '#9ca3af',
         fontSize: getSizeStyles().fontSize
       }}>
-        <span style={{ fontSize: getSizeStyles().starSize }}>⭐</span>
+        <span style={{ fontSize: getSizeStyles().starSize }}>☆</span>
         Lädt...
       </span>
     );

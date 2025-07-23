@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { simpleApi, getApiBaseUrl } from '../services/simpleApi';
 
 export function useNotifications() {
@@ -14,23 +14,19 @@ export function useNotifications() {
     try {
       setLoading(true);
       const token = localStorage.getItem('auth_token');
-      console.log('Fetching unread count with token:', token ? 'Token exists' : 'No token');
 
+      // Verwende den korrekten API-Endpunkt
       const response = await fetch(`${getApiBaseUrl()}/messages/unread-count`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
-      console.log('Unread count response status:', response.status);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('Unread count data:', data);
         setUnreadCount(data.unread_count || 0);
       } else {
-        const errorData = await response.json();
-        console.log('Unread count error:', errorData);
+        console.log('API Response not ok:', response.status);
         setUnreadCount(0);
       }
     } catch (error) {
@@ -41,6 +37,11 @@ export function useNotifications() {
     }
   };
 
+  // Neue Funktion: Sofortige Aktualisierung des unreadCount
+  const refreshUnreadCount = useCallback(async () => {
+    await fetchUnreadCount();
+  }, []);
+
   useEffect(() => {
     // Initial load
     fetchUnreadCount();
@@ -50,7 +51,7 @@ export function useNotifications() {
       if (simpleApi.isAuthenticated()) {
         fetchUnreadCount();
       }
-    }, 10000);
+    }, 16000);
 
     return () => clearInterval(interval);
   }, []);
@@ -68,6 +69,7 @@ export function useNotifications() {
   return {
     unreadCount,
     loading,
-    refresh: fetchUnreadCount
+    refresh: fetchUnreadCount,
+    refreshUnreadCount // Neue Funktion exportieren
   };
 }

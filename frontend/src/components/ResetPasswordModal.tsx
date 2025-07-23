@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import Modal from './Modal';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
+import { useLoadingState } from '../hooks/useLoadingState';
 import LoadingSpinner from './LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import { validatePassword } from '../utils/validation';
 import { inputStyle } from '../utils/styles';
+import { PasswordInput } from './PasswordInput';
 
 interface ResetPasswordModalProps {
   isOpen: boolean;
@@ -19,12 +21,11 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
     newPassword: '',
     confirmPassword: ''
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, error, setError, handleAsyncOperation } = useLoadingState();
   const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const { showSuccess, showError } = useToast();
+  const { showSuccess } = useToast();
   const navigate = useNavigate();
 
 
@@ -65,9 +66,11 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
       return;
     }
 
-    setIsLoading(true);
     try {
-      await simpleApi.resetPassword(email, token, formData.newPassword);
+      await handleAsyncOperation(
+        () => simpleApi.resetPassword(email, token, formData.newPassword),
+        'Fehler beim Zurücksetzen des Passworts'
+      );
       setSuccess('Passwort erfolgreich zurückgesetzt! Du kannst dich jetzt einloggen.');
       showSuccess('Passwort erfolgreich zurückgesetzt!');
       setFormData({ newPassword: '', confirmPassword: '' });
@@ -76,12 +79,8 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
         navigate('/');
         onClose();
       }, 2000); // 2 Sekunden warten, damit der User die Erfolgsmeldung sieht
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Fehler beim Zurücksetzen des Passworts';
-      setError(errorMessage);
-      showError(errorMessage);
-    } finally {
-      setIsLoading(false);
+    } catch {
+      // Error is already handled by handleAsyncOperation
     }
   };
 
@@ -89,15 +88,14 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Passwort zurücksetzen">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 p-6">
         <div>
           <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
             Neues Passwort
           </label>
-          <input
+          <PasswordInput
             id="newPassword"
             name="newPassword"
-            type="password"
             required
             value={formData.newPassword}
             onChange={handleChange}
@@ -138,10 +136,9 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
           <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
             Passwort bestätigen
           </label>
-          <input
+          <PasswordInput
             id="confirmPassword"
             name="confirmPassword"
-            type="password"
             required
             value={formData.confirmPassword}
             onChange={handleChange}
@@ -176,6 +173,7 @@ const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({ isOpen, onClose
           type="submit"
           disabled={isLoading || passwordErrors.length > 0 || !passwordMatch || !formData.newPassword || !formData.confirmPassword}
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label={isLoading ? "Passwort wird zurückgesetzt..." : "Passwort zurücksetzen"}
         >
           {isLoading ? <LoadingSpinner size="sm" showText={false} className="mr-2" /> : 'Passwort zurücksetzen'}
         </button>
