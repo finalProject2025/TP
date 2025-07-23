@@ -5,6 +5,8 @@ import RegisterModal from "../components/RegisterModal";
 import ProfileModal from "../components/ProfileModal";
 import HelpOffersModal from "../components/HelpOffersModal";
 import ChatModal from "../components/ChatModal";
+import ContactFormModal from "../components/ContactFormModal";
+import Footer from "../components/Footer";
 import { simpleApi } from "../services/simpleApi";
 import ResetPasswordModal from '../components/ResetPasswordModal';
 import { useNotifications } from "../hooks/useNotifications";
@@ -29,23 +31,19 @@ function Landing() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetToken, setResetToken] = useState('');
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
     checkAuthStatus();
     // Prüfe, ob die URL /reset-password enthält
-    console.log('Current pathname:', location.pathname);
-    console.log('Current search:', location.search);
     if (location.pathname === '/reset-password') {
       const params = new URLSearchParams(location.search);
       const token = params.get('token');
       const email = params.get('email');
-      console.log('Token:', token);
-      console.log('Email:', email);
       if (token && email) {
         setResetToken(token);
         setResetEmail(decodeURIComponent(email));
         setShowResetModal(true);
-        console.log('Setting modal to true');
       }
     } else {
       setShowResetModal(false);
@@ -108,17 +106,25 @@ function Landing() {
     navigate('/');
   };
 
+  const openContactModal = () => {
+    setIsContactModalOpen(true);
+  };
+
+  const closeContactModal = () => {
+    setIsContactModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b border-gray-100 backdrop-blur-sm bg-opacity-95">
-        <div className="container-custom py-4">
+      <nav className="lg:p-2 md:p-4 sm:p-8 bg-white shadow-lg border-b border-gray-100 backdrop-blur-sm">
+        <div className="container-custom p-4 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">N</span>
+                <span className="text-white font-bold text-lg" translate="no">N</span>
               </div>
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-900" translate="no">
                 Neighborly
               </span>
             </div>
@@ -128,7 +134,16 @@ function Landing() {
                 <div className="relative">
                   <Link
                     to="/messages"
-                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-semibold lg:text-lg md:text-base"
+                    onClick={() => {
+                      // Sofortige Aktualisierung des unreadCount beim Klick auf Nachrichten
+                      if (unreadCount > 0) {
+                        // Kleine Verzögerung, damit die Navigation stattfindet
+                        setTimeout(() => {
+                          // Der unreadCount wird automatisch aktualisiert, wenn die MessagesPage geladen wird
+                        }, 100);
+                      }
+                    }}
                   >
                     <svg
                       className="w-5 h-5"
@@ -155,7 +170,7 @@ function Landing() {
               {isAuthenticated && (
                 <Link
                   to="/posts"
-                  className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-semibold lg:text-lg md:text-base"
                 >
                   <svg
                     className="w-5 h-5"
@@ -177,12 +192,12 @@ function Landing() {
               {isAuthenticated ? (
                 // Logged in state
                 <div className="flex items-center space-x-4">
-                  <span className="hidden xl:inline text-gray-700 font-medium">
-                    Willkommen, {currentUser?.first_name}!
+                  <span className="hidden xl:inline lg:inline text-gray-700 font-semibold lg:text-lg md:text-base">
+                    Willkommen, <span className="text-purple-600">{currentUser?.first_name}!</span>
                   </span>
                   <button
                     onClick={openProfileModal}
-                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-medium"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors font-semibold lg:text-lg md:text-base"
                   >
                     <svg
                       className="w-5 h-5"
@@ -223,12 +238,14 @@ function Landing() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-colors"
+              aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
             >
               <svg
                 className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 {isMobileMenuOpen ? (
                   <path
@@ -277,7 +294,16 @@ function Landing() {
                   <Link
                     to="/messages"
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      // Sofortige Aktualisierung des unreadCount beim Klick auf Nachrichten
+                      if (unreadCount > 0) {
+                        // Kleine Verzögerung, damit die Navigation stattfindet
+                        setTimeout(() => {
+                          // Der unreadCount wird automatisch aktualisiert, wenn die MessagesPage geladen wird
+                        }, 100);
+                      }
+                    }}
                   >
                     <div className="relative">
                       <svg
@@ -333,12 +359,14 @@ function Landing() {
                       setIsMobileMenuOpen(false);
                     }}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                    aria-label="Profil öffnen"
                   >
                     <svg
                       className="w-6 h-6 text-gray-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -383,12 +411,14 @@ function Landing() {
                       setIsMobileMenuOpen(false);
                     }}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors w-full text-left"
+                    aria-label="Anmelden"
                   >
                     <svg
                       className="w-6 h-6 text-gray-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -406,6 +436,7 @@ function Landing() {
                       setIsMobileMenuOpen(false);
                     }}
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-lg font-semibold hover:shadow-lg transition-all"
+                    aria-label="Registrieren"
                   >
                     Registrieren
                   </button>
@@ -417,24 +448,25 @@ function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-gray-50 to-blue-50 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-500 to-blue-300 overflow-hidden pt-4 sm:pt-8 md:p-8 pb-8 px-4 sm:px-0 shadow-2xl border-b-6 border-t-1 border-gray-400">
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-40">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute bottom-10 left-1/2 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
+        <div className="absolute inset-0 opacity-45">
+          <div className="absolute bottom-20 left-45 w-300 h-300 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse "></div>
+          <div className="absolute top-10 right-450 w-200 h-200 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-3000"></div>
+          <div className="absolute top-40 right-0 w-225 h-225 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute bottom--50 left-275 w-175 h-175 bg-white rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-2000"></div>
         </div>
 
-        <div className="relative container-custom py-20 lg:py-32">
+        <div className="relative container-custom py-3 sm:py-6 lg:py-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Text */}
             <div className="text-center lg:text-left">
-              <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-6">
+              <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-6 animate-pulse-slow" >
                 <div className="w-4 h-4 bg-blue-600 rounded-sm mr-2"></div>
                 Neu: Jetzt auch in Ihrer Stadt verfügbar!
               </div>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
                 Ihre{" "}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Nachbarschaft
@@ -450,25 +482,29 @@ function Landing() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <button
-                  onClick={openRegisterModal}
-                  className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center text-base sm:text-lg"
-                >
-                  <span>Kostenlos starten</span>
-                  <svg
-                    className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {!isAuthenticated && (
+                  <button
+                    onClick={openRegisterModal}
+                    className="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center text-base sm:text-lg"
+                    aria-label="Kostenlos starten"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </button>
+                    <span>Kostenlos starten</span>
+                    <svg
+                      className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
+                  </button>
+                )}
                 {isAuthenticated && (
                   <Link
                     to="/posts"
@@ -503,12 +539,14 @@ function Landing() {
                   <button
                     onClick={openLoginModal}
                     className="group bg-white text-gray-700 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold border-2 border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center text-base sm:text-lg"
+                    aria-label="Anmelden"
                   >
                     <svg
                       className="w-5 h-5 mr-2"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"
@@ -526,22 +564,22 @@ function Landing() {
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6 text-sm text-gray-500">
                 <div className="flex items-center">
                   <div className="flex -space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full border-2 border-white"></div>
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full border-2 border-white"></div>
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full border-2 border-white"></div>
-                    <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full border-2 border-white"></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full "></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full "></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full "></div>
+                    <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full "></div>
                   </div>
                   <span className="ml-3">2.500+ aktive Nachbarn</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="text-yellow-400">★★★★★</span>
+                  <span className="text-yellow-400 ">★★★★★</span>
                   <span className="ml-1">4.9/5 Bewertung</span>
                 </div>
               </div>
             </div>
 
             {/* Right Column - Visual */}
-            <div className="relative mt-12 lg:mt-0">
+            <div className="relative mt-3 sm:mt-12 lg:mt-0 px-4 sm:px-0">
               <div className="relative z-10">
                 {/* Main Card */}
                 <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
@@ -685,14 +723,18 @@ function Landing() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-400 to-purple-400 py-16 relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full transform translate-x-32 -translate-y-32"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full transform -translate-x-24 translate-y-24"></div>
+        <div className="absolute inset-0 pointer-events-none opacity-50">
+          <div className="absolute top-0 right-0 w-150 h-150 bg-white rounded-full transform translate-x-32 -translate-y-32 z-5 opacity-20 blur-sm"></div>
+          <div className="absolute top-0 right-0 w-155 h-155 bg-blue-200 rounded-full animate-pulse blur-sm transform translate-x-32 -translate-y-32 z-3 opacity-20"></div>
+          <div className="absolute top-0 right-0 w-160 h-160 bg-purple-400 rounded-full animate-pulse blur-sm transform translate-x-32 -translate-y-32 z-2 opacity-20"></div>
+          <div className="absolute bottom-0 left-0 w-100 h-100 bg-blue-200 rounded-full animate-pulse blur-sm transform -translate-x-24 translate-y-24 z-3 opacity-20"></div>
+          <div className="absolute bottom-0 left-0 w-105 h-105 bg-purple-300 rounded-full animate-pulse blur-sm transform -translate-x-24 translate-y-24 z-3 opacity-20"></div>
+          <div className="absolute bottom-0 left-0 w-95 h-95 bg-white rounded-full transform -translate-x-24 translate-y-24 z-4 opacity-20"></div>
         </div>
         <div className="container-custom text-center px-4">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl sm:text-3xl font-bold text-white mb-4">
             Bereit, Ihre Nachbarschaft zu entdecken?
           </h2>
           <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
@@ -700,11 +742,122 @@ function Landing() {
             machen Sie den ersten Schritt.
           </p>
           <button
-            onClick={openRegisterModal}
-            className="bg-white text-blue-600 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-50 transition-colors shadow-lg text-base sm:text-lg"
+            onClick={isAuthenticated ? () => navigate('/posts') : openRegisterModal}
+            className="bg-white cursor-pointer text-blue-600 font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-50 transition-colors shadow-lg text-base sm:text-lg"
+            aria-label={isAuthenticated ? "Hilfe-Anfrage starten" : "Jetzt kostenlos registrieren"}
           >
-            Jetzt kostenlos registrieren →
+            {isAuthenticated ? 'Hilfe-Anfrage starten!' : 'Jetzt kostenlos registrieren →'}
           </button>
+        </div>
+      </div>
+
+      {/* Verhaltenskodex Section */}
+      <div className="bg-white py-20">
+        <div className="container-custom">
+          <div className="text-center mb-12 sm:mb-16 relative">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Verhaltenskodex
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+              Gemeinsam schaffen wir eine respektvolle und hilfsbereite Nachbarschaftsgemeinschaft.
+            </p>
+            <div className="absolute -top-29 right-5 lg:right-20 lg:-top-5 transform rotate-0 hover:rotate-8  lg:rotate-5 transition-transform duration-500">
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-2 shadow-lg max-w-90">
+                <h3 className="text-md font-bold text-white mb-1">
+                  Bewerte die Hilfeleistung
+                </h3>
+                <p className="text-white text-xs leading-tight">
+                  Nach jeder Unterstützung: Gib eine faire Bewertung ab – gegenseitiges Feedback hilft allen weiter.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Sei freundlich
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Begegne anderen mit Respekt und Höflichkeit. Eine freundliche Nachbarschaft beginnt mit jedem Einzelnen.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Hilf ehrlich
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Biete nur Hilfe an, die du zuverlässig leisten kannst. Ehrlichkeit schafft Vertrauen in der Gemeinschaft.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Halte Absprachen ein
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Komm zu vereinbarten Zeiten – Zuverlässigkeit zählt und stärkt das Vertrauen in der Nachbarschaft.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Respektiere Privatsphäre
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Teile keine privaten Informationen anderer. Vertrauen und Diskretion sind die Grundlage jeder guten Nachbarschaft.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Kein Missbrauch
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Keine Werbung, keine Beleidigungen, keine illegalen Aktivitäten. Wir schützen unsere Gemeinschaft.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Melde Probleme
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                Wenn du auf Fehlverhalten stößt, melde es dem App-Team. Gemeinsam halten wir unsere Plattform sicher.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -742,6 +895,26 @@ function Landing() {
         email={resetEmail}
         token={resetToken}
       />
+
+      {/* Contact Form Modal */}
+      <ContactFormModal
+        isOpen={isContactModalOpen}
+        onClose={closeContactModal}
+      />
+
+      {/* Floating Contact Button */}
+      <button
+        onClick={openContactModal}
+        className="fixed z-50 lg:opacity-50 lg:hover:opacity-100 sm:opacity-100 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 bottom-20 right-2 md:bottom-6 md:right-6"
+        aria-label="Kontakt"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </button>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

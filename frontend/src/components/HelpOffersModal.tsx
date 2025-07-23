@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
+import RatingDisplay from './RatingDisplay';
 import { formatTimeAgo } from '../utils/dateUtils';
 import type { HelpOffer } from '../types';
 
@@ -43,11 +44,11 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
   const handleAccept = async (offerId: string, helperId: string, helperName: string) => {
     try {
       await simpleApi.acceptHelpOffer(offerId);
-      
+
       // Update local state
-      setHelpOffers(prev => 
-        prev.map(offer => 
-          offer.id === offerId 
+      setHelpOffers(prev =>
+        prev.map(offer =>
+          offer.id === offerId
             ? { ...offer, status: 'accepted', is_read: true }
             : offer
         )
@@ -67,16 +68,16 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
   const handleDecline = async (offerId: string) => {
     try {
       await simpleApi.declineHelpOffer(offerId);
-      
+
       // Update local state
-      setHelpOffers(prev => 
-        prev.map(offer => 
-          offer.id === offerId 
+      setHelpOffers(prev =>
+        prev.map(offer =>
+          offer.id === offerId
             ? { ...offer, status: 'declined', is_read: true }
             : offer
         )
       );
-      
+
       showSuccess('Hilfe-Angebot abgelehnt.');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Fehler beim Ablehnen des Hilfe-Angebots';
@@ -105,7 +106,7 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -158,9 +159,8 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
               {helpOffers.map((offer) => (
                 <div
                   key={offer.id}
-                  className={`border rounded-lg p-4 ${
-                    !offer.is_read ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200'
-                  }`}
+                  className={`border rounded-lg p-4 ${!offer.is_read ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200'
+                    }`}
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between mb-3">
@@ -173,6 +173,7 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
                           {offer.first_name} {offer.last_name}
                         </h4>
                         <p className="text-sm text-gray-600">📍 PLZ {offer.postal_code}</p>
+                        <RatingDisplay userId={offer.helper_id} size="small" inline={true} />
                       </div>
                     </div>
                     <div className="text-right">

@@ -156,17 +156,14 @@ export interface ReviewStats {
 export interface ExtendedPost extends Post {
   status: 'active' | 'in_progress' | 'rated' | 'closed' | 'auto_closed';
   auto_close_date: string;
-  has_active_collaboration?: boolean;
   user: User & { initials?: string };
 }
 
 // Auth Response interface
 export interface AuthResponse {
   user: User;
-  token?: string;
+  token: string;
   message: string;
-  requiresEmailVerification?: boolean;
-  requiresProfileCompletion?: boolean;
 }
 
 // Help Offer interface

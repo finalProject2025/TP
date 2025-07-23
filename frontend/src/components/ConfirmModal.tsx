@@ -99,6 +99,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               e.currentTarget.style.backgroundColor = 'white';
               e.currentTarget.style.borderColor = '#d1d5db';
             }}
+            aria-label="Aktion abbrechen"
           >
             {cancelText}
           </button>
@@ -122,6 +123,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = confirmColor;
             }}
+            aria-label="Aktion bestätigen"
           >
             {confirmText}
           </button>

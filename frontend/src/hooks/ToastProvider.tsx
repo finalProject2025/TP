@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SimpleToast from '../components/SimpleToast';
+import Toast from '../components/Toast';
 import { ToastContext } from './useToast.context';
 
 const ToastProvider = ({ children }: { children: React.ReactNode }) => {
@@ -38,7 +38,7 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
               marginTop: index > 0 ? '10px' : '0'
             }}
           >
-            <SimpleToast
+            <Toast
               message={toast.message}
               type={toast.type}
               duration={toast.duration}

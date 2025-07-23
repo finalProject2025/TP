@@ -1,16 +1,33 @@
-import type { User, Post, CreatePostData, UpdatePostData, CreateMessageData, CreateReviewData, PostFilters, ExtendedPost, AuthResponse, HelpOffer } from '../types';
+import type { User, Post, CreatePostData, UpdatePostData, CreateMessageData, CreateReviewData, PostFilters, ExtendedPost, AuthResponse, HelpOffer, RatingInfo, CreateRatingData, RatingResponse } from '../types';
+
+// Custom error type for email verification
+interface EmailVerificationError extends Error {
+  requiresEmailVerification?: boolean;
+}
+
+// Response types for email verification
+interface EmailVerificationResponse {
+  success: boolean;
+  message: string;
+}
+
+interface ResendVerificationResponse {
+  success: boolean;
+  message: string;
+}
 
 // Dynamic API URL detection
 export const getApiBaseUrl = () => {
   const hostname = window.location.hostname;
-
-  // If accessing via localhost, use localhost for API
+  const protocol = window.location.protocol;
+  
+  // Für Development: localhost:3002
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:3002/api';
+    return `${protocol}//${hostname}:3002/api`;
   }
-
-  // If accessing via external IP, use the same IP for API
-  return `http://${hostname}:3002/api`;
+  
+  // Für Production: gleicher Host
+  return `${protocol}//${hostname}/api`;
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -27,6 +44,18 @@ const getAuthHeaders = () => {
 // Helper function to handle API responses
 const handleResponse = async (response: Response) => {
   if (response.status === 401) {
+    // Prüfen ob es ein E-Mail-Validierungsfehler ist
+    try {
+      const error = await response.json();
+      if (error.requiresEmailVerification) {
+        const customError = new Error(error.error || 'Unauthorized') as EmailVerificationError;
+        customError.requiresEmailVerification = true;
+        throw customError;
+      }
+    } catch {
+      // Fallback für andere 401 Fehler
+    }
+    
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_data');
     window.location.href = '/';
@@ -41,7 +70,20 @@ const handleResponse = async (response: Response) => {
   return response.json();
 };
 
-
+//das der helfende user die post aus sieht
+const getMyMadeHelpOffers = async () => {
+  const response = await fetch(`${getApiBaseUrl()}/help-offers/my-made-offers`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error('Fehler beim Laden der gemachten Hilfe-Angebote');
+  }
+  
+  return response.json();
+};
 
 
 
@@ -60,6 +102,22 @@ export const getCategoryColor = (category: string): string => {
 
 export const simpleApi = {
   // Auth
+  async getGoogleClientId(): Promise<string> {
+    const response = await fetch(`${API_BASE_URL}/auth/google/client-id`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get Google Client ID');
+    }
+
+    const data = await response.json();
+    return data.clientId;
+  },
+
   async register(userData: {
     email: string;
     password: string;
@@ -82,8 +140,8 @@ export const simpleApi = {
 
     const data = await response.json();
 
-    // Store token and user data
-    if (data.token) {
+    // Nur Token speichern wenn E-Mail-Validierung nicht erforderlich ist
+    if (data.token && !data.requiresEmailVerification) {
       localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user_data', JSON.stringify(data.user));
     }
@@ -102,6 +160,12 @@ export const simpleApi = {
 
     if (!response.ok) {
       const error = await response.json();
+      // Prüfen ob E-Mail-Validierung erforderlich ist
+      if (error.requiresEmailVerification) {
+        const customError = new Error(error.error || 'Login failed') as EmailVerificationError;
+        customError.requiresEmailVerification = true;
+        throw customError;
+      }
       throw new Error(error.error || 'Login failed');
     }
 
@@ -237,7 +301,7 @@ export const simpleApi = {
   },
 
   // Ratings
-  async createRating(ratedUserId: string, postId: string, rating: number, comment?: string): Promise<unknown> {
+  async createRating(ratedUserId: string, postId: string, rating: number, comment?: string): Promise<RatingResponse> {
     const response = await fetch(`${API_BASE_URL}/ratings`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -246,13 +310,13 @@ export const simpleApi = {
         post_id: postId,
         rating,
         comment: comment || null
-      }),
+      } as CreateRatingData),
     });
 
     return handleResponse(response);
   },
 
-  async checkExistingRating(postId: string): Promise<{ hasRated: boolean; canRate: boolean; reason: string; postId: number; raterId: string }> {
+  async checkExistingRating(postId: string): Promise<RatingInfo> {
     const response = await fetch(`${API_BASE_URL}/ratings/check/${postId}`, {
       method: 'GET',
       headers: getAuthHeaders(),
@@ -294,7 +358,20 @@ export const simpleApi = {
       headers: getAuthHeaders(),
       body: JSON.stringify(userData),
     });
-    return handleResponse(response);
+    
+    const data = await handleResponse(response);
+    
+    // Token aktualisieren falls vorhanden
+    if (data.token) {
+      localStorage.setItem('auth_token', data.token);
+    }
+    
+    // User-Daten aktualisieren falls vorhanden
+    if (data.user) {
+      localStorage.setItem('user_data', JSON.stringify(data.user));
+    }
+    
+    return data.user || data;
   },
 
   async getUserById(id: string): Promise<User> {
@@ -467,16 +544,135 @@ export const simpleApi = {
   async resetPassword(email: string, token: string, newPassword: string): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/users/reset-password`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, token, newPassword }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        token,
+        new_password: newPassword,
+      }),
     });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Fehler beim Zurücksetzen des Passworts');
+
+    return handleResponse(response);
+  },
+
+  // Google OAuth
+  async googleLogin(idToken: string): Promise<AuthResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/google`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        idToken,
+      }),
+    });
+
+    const data = await handleResponse(response);
+    
+    // Token im localStorage speichern (gleicher Schlüssel wie normale Login)
+    if (data.token) {
+      localStorage.setItem('auth_token', data.token);
+      localStorage.setItem('user_data', JSON.stringify(data.user));
+    }
+
+    return data;
+  },
+
+  // PLZ Update für Google-Nutzer
+  async updatePostalCode(postalCode: string): Promise<{ message: string; user: User }> {
+    const response = await fetch(`${API_BASE_URL}/users/postal-code`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        postal_code: postalCode,
+      }),
+    });
+
+    const data = await handleResponse(response);
+    
+    // Token aktualisieren falls vorhanden
+    if (data.token) {
+      localStorage.setItem('auth_token', data.token);
+    }
+
+    return data;
+  },
+
+  // Prüfe ob User PLZ hat
+  async checkUserPostalCode(): Promise<{ hasPostalCode: boolean; user?: User }> {
+    try {
+      const user = await this.getProfile();
+      return {
+        hasPostalCode: !!user.postal_code,
+        user,
+      };
+    } catch (error) {
+      console.error('Error checking postal code:', error);
+      return {
+        hasPostalCode: false,
+      };
     }
   },
+
+  // Get current user profile (alias for getProfile)
+  async getCurrentUserProfile(): Promise<User> {
+    return this.getProfile();
+  },
+
+  // Contact form functions
+  async sendContactEmail(contactData: { name: string; email: string; subject: string; message: string }): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/contact`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(contactData)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to send contact email');
+    }
+  },
+
+  // E-Mail-Validierung
+  async verifyEmail(email: string, token: string): Promise<EmailVerificationResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, token }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Fehler bei der E-Mail-Verifizierung');
+    }
+
+    return response.json();
+  },
+
+  async resendVerificationEmail(email: string): Promise<ResendVerificationResponse> {
+    const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Fehler beim erneuten Senden der E-Mail');
+    }
+
+    return response.json();
+  }
 };
 
 // Duplicate exports removed - functions are already defined above
-
 export type { User, Post, AuthResponse, HelpOffer, ExtendedPost };
+export { getMyMadeHelpOffers };

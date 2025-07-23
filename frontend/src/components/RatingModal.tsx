@@ -256,6 +256,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
                 e.currentTarget.style.borderColor = '#d1d5db';
               }
             }}
+            aria-label="Bewertung abbrechen"
           >
             Abbrechen
           </button>
@@ -287,6 +288,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
                 e.currentTarget.style.backgroundColor = '#3b82f6';
               }
             }}
+            aria-label={isSubmitting ? "Bewertung wird gesendet..." : "Bewertung senden"}
           >
             {isSubmitting && (
               <div style={{
