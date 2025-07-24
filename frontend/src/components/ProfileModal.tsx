@@ -151,8 +151,8 @@ function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            currentPassword: passwordForm.current_password,
-            newPassword: passwordForm.new_password,
+            current_password: passwordForm.current_password,
+            new_password: passwordForm.new_password,
           }),
         }
       );
