@@ -1,0 +1,55 @@
+{
+  "name": "neighborly-tests",
+  "version": "1.0.0",
+  "description": "Test Suite für das Neighborly-Projekt",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:watch": "vitest --watch",
+    "test:backend": "vitest backend/",
+    "test:frontend": "vitest frontend/",
+    "test:all": "vitest",
+    "test:auth": "vitest backend/controllers/authController.test.ts",
+    "test:users": "vitest backend/controllers/usersController.test.ts",
+    "test:api": "vitest frontend/services/simpleApi.test.ts",
+    "test:validation": "vitest frontend/utils/validation.test.ts",
+    "test:encryption": "vitest backend/utils/encryption.test.ts",
+    "test:security": "vitest backend/controllers/authController.test.ts backend/utils/encryption.test.ts",
+    "test:functionality": "vitest frontend/services/simpleApi.test.ts frontend/utils/validation.test.ts",
+    "test:quick": "vitest --run backend/controllers/authController.test.ts frontend/services/simpleApi.test.ts",
+    "test:ci": "vitest --run --coverage --reporter=verbose",
+    "test:simple": "vitest simple/basic.test.ts",
+    "test:project": "vitest simple/project.test.ts",
+    "test:real": "vitest simple/real-functions.test.ts"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@types/node": "^20.0.0",
+    "@types/supertest": "^2.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "jsdom": "^23.0.0",
+    "supertest": "^6.3.0",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "testing",
+    "vitest",
+    "unit-tests",
+    "neighborly"
+  ],
+  "author": "Neighborly Team",
+  "license": "MIT",
+  "dependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/nodemailer": "^6.4.17",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.0",
+    "google-auth-library": "^10.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^7.0.5"
+  }
+}
