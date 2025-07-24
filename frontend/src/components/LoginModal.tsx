@@ -133,13 +133,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <div className="flex flex-col items-center p-6">
           {/* Logo */}
-          <div className="mb-6">
-            <img
-              src="/neighborly_logo.svg"
-              alt="Neighborly Logo"
-              className="h-12 w-auto"
-            />
-          </div>
+          <div className="mb-5 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xl" translate="no" >N</span>
+              </div>
 
           {/* Title */}
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
