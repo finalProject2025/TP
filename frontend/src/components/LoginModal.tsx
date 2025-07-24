@@ -17,7 +17,7 @@ interface LoginModalProps {
   onSwitchToRegister?: () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -214,7 +214,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               type="button"
               onClick={() => {
                 onClose();
-                // Hier würde normalerweise das Register-Modal geöffnet
+                onSwitchToRegister?.();
               }}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
