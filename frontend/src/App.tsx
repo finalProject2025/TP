@@ -21,7 +21,8 @@ function EmailVerificationHandler() {
     const token = searchParams.get('token');
     const email = searchParams.get('email');
     
-    if (token && email) {
+    // Prüfe ob wir auf der verify-email Route sind
+    if (window.location.pathname === '/verify-email' && token && email) {
       setVerificationToken(token);
       setVerificationEmail(decodeURIComponent(email));
       setShowEmailVerification(true);
@@ -85,7 +86,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/reset-password" element={<Landing />} />
-              <Route path="/verify-email" element={<Landing />} />
+              <Route path="/verify-email" element={<Landing />} /> {/* Zurück zu Landing */}
               <Route path="/posts" element={<SimplePostsPage />} />
               <Route path="/messages" element={<MessagesPage />} />
             </Routes>
