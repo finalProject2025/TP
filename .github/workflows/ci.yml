@@ -1,0 +1,48 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: './tests/package-lock.json'
+
+    - name: Install Dependencies
+      working-directory: ./tests
+      run: npm ci
+
+    - name: Run Tests with Coverage
+      working-directory: ./tests
+      run: npm run test:ci
+
+    - name: Run Frontend Tests
+      working-directory: ./tests
+      run: npm run test:frontend
+
+    - name: Run Backend Tests
+      working-directory: ./tests
+      run: npm run test:backend
+
+    - name: Run Security Tests
+      working-directory: ./tests
+      run: npm run test:security
+
+    - name: Upload Coverage Reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ./tests/coverage/
+        if-no-files-found: warn
