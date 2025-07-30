@@ -706,7 +706,7 @@ const loadPosts = useCallback(async () => {
                     </p>
                   </div>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    className={`px-3 py-1 rounded-full text-xs font-medium text-center ${
                       post.type === "request"
                         ? "bg-orange-100 text-orange-800"
                         : "bg-green-100 text-green-800"
@@ -736,7 +736,7 @@ const loadPosts = useCallback(async () => {
                     {/* Post Status Badge - nur anzeigen wenn nicht 'active' */}
                     {post.status !== "active" && (
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        className={`px-2 py-1 rounded-full text-xs font-medium text-center ${
                           post.status === "in_progress"
                             ? "bg-yellow-100 text-yellow-800"
                             : post.status === "closed"

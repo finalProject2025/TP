@@ -380,15 +380,16 @@ const ChatModal = React.memo(function ChatModal({ isOpen, onClose, otherUserId, 
             placeholder="Nachricht schreiben..."
             style={{
               flex: 1,
-              padding: '8px 12px',
+              padding: '8px',
               border: '1px solid #d1d5db',
               borderRadius: '20px',
-              fontSize: '16px',
+              fontSize: '14px',
               outline: 'none'
             }}
             disabled={sending}
             aria-label="Nachricht eingeben"
           />
+          {/* Submit */}
           <button
             onClick={sendMessage}
             disabled={!newMessage.trim() || sending}
