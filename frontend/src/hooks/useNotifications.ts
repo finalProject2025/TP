@@ -51,7 +51,7 @@ export function useNotifications() {
       if (simpleApi.isAuthenticated()) {
         fetchUnreadCount();
       }
-    }, 16000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);

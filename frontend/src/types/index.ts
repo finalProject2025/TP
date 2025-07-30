@@ -243,3 +243,17 @@ export interface RatingResponse {
     created_at: string;
   };
 }
+
+// User Rating interface for detailed rating display
+export interface UserRating {
+  id: string;
+  rater_id: string;
+  rated_user_id: string;
+  post_id: string;
+  rating: number;
+  comment?: string;
+  created_at: string;
+  rater_first_name: string;
+  rater_last_name: string;
+  post_title?: string;
+}
