@@ -335,7 +335,7 @@ export const simpleApi = {
   },
 
   async getUserRatings(userId: string, limit: number = 10): Promise<unknown> {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}/ratings?limit=${limit}`, {
+    const response = await fetch(`${API_BASE_URL}/ratings/${userId}?limit=${limit}`, {
       method: 'GET',
       headers: getAuthHeaders(),
     });

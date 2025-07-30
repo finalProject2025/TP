@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { simpleApi } from '../services/simpleApi';
 import { useToast } from '../hooks/useToast';
 import RatingDisplay from './RatingDisplay';
+import UserRatingsModal from './UserRatingsModal';
 import { formatTimeAgo } from '../utils/dateUtils';
 import type { HelpOffer } from '../types';
 
@@ -19,6 +20,15 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
   const [helpOffers, setHelpOffers] = useState<HelpOffer[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userRatingsModal, setUserRatingsModal] = useState<{
+    isOpen: boolean;
+    userId: string;
+    userName: string;
+  }>({
+    isOpen: false,
+    userId: '',
+    userName: ''
+  });
   const { showSuccess, showError } = useToast();
 
   useEffect(() => {
@@ -85,7 +95,21 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
     }
   };
 
+  const openUserRatings = (userId: string, userName: string) => {
+    setUserRatingsModal({
+      isOpen: true,
+      userId,
+      userName
+    });
+  };
 
+  const closeUserRatings = () => {
+    setUserRatingsModal({
+      isOpen: false,
+      userId: '',
+      userName: ''
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -106,133 +130,148 @@ const HelpOffersModal: React.FC<HelpOffersModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Hilfe-Angebote ({helpOffers.length})
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
-          {loading && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Lade Hilfe-Angebote...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-              <p className="text-red-600">{error}</p>
-              <button
-                onClick={loadHelpOffers}
-                className="mt-2 text-red-600 hover:text-red-800 font-medium"
-              >
-                Erneut versuchen
-              </button>
-            </div>
-          )}
-
-          {!loading && !error && helpOffers.length === 0 && (
-            <div className="text-center py-8">
-              <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1m8 0V4.5" />
+    <>
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Hilfe-Angebote ({helpOffers.length})
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Keine Hilfe-Angebote</h3>
-              <p className="text-gray-600">Sie haben noch keine Hilfe-Angebote erhalten.</p>
-            </div>
-          )}
+            </button>
+          </div>
 
-          {!loading && !error && helpOffers.length > 0 && (
-            <div className="space-y-4">
-              {helpOffers.map((offer) => (
-                <div
-                  key={offer.id}
-                  className={`border rounded-lg p-4 ${!offer.is_read ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200'
-                    }`}
+          {/* Content */}
+          <div className="p-6 overflow-y-auto max-h-[60vh]">
+            {loading && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="mt-2 text-gray-600">Lade Hilfe-Angebote...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                <p className="text-red-600">{error}</p>
+                <button
+                  onClick={loadHelpOffers}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
                 >
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                        {offer.first_name.charAt(0)}{offer.last_name.charAt(0)}
+                  Erneut versuchen
+                </button>
+              </div>
+            )}
+
+            {!loading && !error && helpOffers.length === 0 && (
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1m8 0V4.5" />
+                </svg>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Keine Hilfe-Angebote</h3>
+                <p className="text-gray-600">Sie haben noch keine Hilfe-Angebote erhalten.</p>
+              </div>
+            )}
+
+            {!loading && !error && helpOffers.length > 0 && (
+              <div className="space-y-4">
+                {helpOffers.map((offer) => (
+                  <div
+                    key={offer.id}
+                    className={`border rounded-lg p-4 ${!offer.is_read ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200'
+                      }`}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                          {offer.first_name.charAt(0)}{offer.last_name.charAt(0)}
+                        </div>
+                        <div>
+                          <button
+                            onClick={() => openUserRatings(offer.helper_id, `${offer.first_name} ${offer.last_name}`)}
+                            className="text-left hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+                          >
+                            <h4 className="font-medium text-gray-900 hover:text-blue-600 transition-colors">
+                              {offer.first_name} {offer.last_name}
+                            </h4>
+                          </button>
+                          <p className="text-sm text-gray-600">📍 PLZ {offer.postal_code}</p>
+                          <RatingDisplay userId={offer.helper_id} size="small" inline={true} />
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-medium text-gray-900">
-                          {offer.first_name} {offer.last_name}
-                        </h4>
-                        <p className="text-sm text-gray-600">📍 PLZ {offer.postal_code}</p>
-                        <RatingDisplay userId={offer.helper_id} size="small" inline={true} />
+                      <div className="text-right">
+                        <span
+                          className="inline-block px-2 py-1 rounded-full text-xs font-medium text-white"
+                          style={{ backgroundColor: getStatusColor(offer.status) }}
+                        >
+                          {getStatusText(offer.status)}
+                        </span>
+                        <p className="text-xs text-gray-500 mt-1">{formatTimeAgo(offer.created_at)}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span
-                        className="inline-block px-2 py-1 rounded-full text-xs font-medium text-white"
-                        style={{ backgroundColor: getStatusColor(offer.status) }}
-                      >
-                        {getStatusText(offer.status)}
-                      </span>
-                      <p className="text-xs text-gray-500 mt-1">{formatTimeAgo(offer.created_at)}</p>
+
+                    {/* Post Info */}
+                    <div className="mb-3 p-3 bg-gray-50 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">Post: {offer.post_title}</p>
+                      <p className="text-xs text-gray-600">{offer.post_category}</p>
                     </div>
-                  </div>
 
-                  {/* Post Info */}
-                  <div className="mb-3 p-3 bg-gray-50 rounded-lg">
-                    <p className="text-sm font-medium text-gray-900">Post: {offer.post_title}</p>
-                    <p className="text-xs text-gray-600">{offer.post_category}</p>
-                  </div>
+                    {/* Message */}
+                    {offer.message && (
+                      <div className="mb-4">
+                        <p className="text-sm text-gray-700 italic">"{offer.message}"</p>
+                      </div>
+                    )}
 
-                  {/* Message */}
-                  {offer.message && (
-                    <div className="mb-4">
-                      <p className="text-sm text-gray-700 italic">"{offer.message}"</p>
-                    </div>
-                  )}
+                    {/* Actions */}
+                    {offer.status === 'pending' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleAccept(offer.id, offer.helper_id, `${offer.first_name} ${offer.last_name}`)}
+                          className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                        >
+                          Annehmen & Chat starten
+                        </button>
+                        <button
+                          onClick={() => handleDecline(offer.id)}
+                          className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                        >
+                          Ablehnen
+                        </button>
+                      </div>
+                    )}
 
-                  {/* Actions */}
-                  {offer.status === 'pending' && (
-                    <div className="flex gap-2">
+                    {offer.status === 'accepted' && (
                       <button
-                        onClick={() => handleAccept(offer.id, offer.helper_id, `${offer.first_name} ${offer.last_name}`)}
-                        className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                        onClick={() => onStartChat(offer.helper_id, `${offer.first_name} ${offer.last_name}`)}
+                        className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors"
                       >
-                        Annehmen & Chat starten
+                        Chat öffnen
                       </button>
-                      <button
-                        onClick={() => handleDecline(offer.id)}
-                        className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors"
-                      >
-                        Ablehnen
-                      </button>
-                    </div>
-                  )}
-
-                  {offer.status === 'accepted' && (
-                    <button
-                      onClick={() => onStartChat(offer.helper_id, `${offer.first_name} ${offer.last_name}`)}
-                      className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors"
-                    >
-                      Chat öffnen
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* User Ratings Modal */}
+      <UserRatingsModal
+        isOpen={userRatingsModal.isOpen}
+        onClose={closeUserRatings}
+        userId={userRatingsModal.userId}
+        userName={userRatingsModal.userName}
+      />
+    </>
   );
 };
 
